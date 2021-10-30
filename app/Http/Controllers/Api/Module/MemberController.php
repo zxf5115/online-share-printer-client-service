@@ -59,7 +59,6 @@ class MemberController extends BaseController
    * @apiSuccess (字段说明|会员) {String} id 会员编号
    * @apiSuccess (字段说明|会员) {String} role_id 角色编号
    * @apiSuccess (字段说明|会员) {String} inviter_id 邀请人编号
-   * @apiSuccess (字段说明|会员) {String} member_no 会员号
    * @apiSuccess (字段说明|会员) {String} avatar 会员头像
    * @apiSuccess (字段说明|会员) {String} username 登录账户
    * @apiSuccess (字段说明|会员) {String} nickname 会员姓名
@@ -117,7 +116,6 @@ class MemberController extends BaseController
    * @apiSuccess (字段说明|会员) {String} id 会员编号
    * @apiSuccess (字段说明|会员) {String} role_id 角色编号
    * @apiSuccess (字段说明|会员) {String} inviter_id 邀请人编号
-   * @apiSuccess (字段说明|会员) {String} member_no 会员号
    * @apiSuccess (字段说明|会员) {String} avatar 会员头像
    * @apiSuccess (字段说明|会员) {String} username 登录账户
    * @apiSuccess (字段说明|会员) {String} nickname 会员姓名
@@ -169,7 +167,6 @@ class MemberController extends BaseController
    * @apiSuccess (字段说明|会员) {String} id 会员编号
    * @apiSuccess (字段说明|会员) {String} role_id 角色编号
    * @apiSuccess (字段说明|会员) {String} inviter_id 邀请人编号
-   * @apiSuccess (字段说明|会员) {String} member_no 会员号
    * @apiSuccess (字段说明|会员) {String} avatar 会员头像
    * @apiSuccess (字段说明|会员) {String} username 登录账户
    * @apiSuccess (字段说明|会员) {String} nickname 会员姓名

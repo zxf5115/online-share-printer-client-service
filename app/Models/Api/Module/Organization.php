@@ -5,16 +5,16 @@ use Illuminate\Support\Facades\DB;
 
 use App\TraitClass\ToolTrait;
 use App\Http\Constant\Parameter;
-use App\Models\Common\Module\Member as Common;
+use App\Models\Common\Module\Organization as Common;
 
 
 /**
  * @author zhangxiaofei [<1326336909@qq.com>]
  * @dateTime 2021-06-09
  *
- * 会员模型类
+ * 机构模型类
  */
-class Member extends Common
+class Organization extends Common
 {
   // 隐藏的属性
   public $hidden = [
