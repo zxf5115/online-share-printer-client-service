@@ -14,17 +14,8 @@ $api->version('v1', [
   ], function ($api)
   {
     $api->group(['namespace' => 'System'], function ($api) {
-      $api->post('login', 'LoginController@login'); // 密码登录
-      $api->post('oauth_login', 'LoginController@oauth_login'); // 一键登录
-      $api->post('sms_login', 'LoginController@sms_login'); // 短信登录
-      $api->post('sms_code', 'LoginController@sms_code'); // 登录验证码
       $api->post('weixin_login', 'LoginController@weixin_login'); // 微信登录
-      $api->post('apple_login', 'LoginController@apple_login'); // 苹果登录
       $api->post('register', 'LoginController@register');
-      $api->post('bind_mobile', 'LoginController@bind_mobile');
-      $api->post('bind_code', 'LoginController@bind_code');
-      $api->post('reset_code', 'LoginController@reset_code');
-      $api->post('back_mobile', 'LoginController@back_mobile');
       $api->get('logout', 'LoginController@logout'); // 退出
 
       // 系统基础数据路由

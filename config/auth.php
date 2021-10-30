@@ -41,12 +41,6 @@ return [
             'provider' => 'users',
         ],
 
-        'platform' => [
-            'driver' => 'jwt',
-            'provider' => 'users',
-            'hash' => false,
-        ],
-
         'api' => [
             'driver' => 'jwt',
             'provider' => 'apis',
@@ -72,10 +66,6 @@ return [
     */
 
     'providers' => [
-        'users' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\Platform\Platform::class,
-        ],
 
         'apis' => [
             'driver' => 'eloquent',
