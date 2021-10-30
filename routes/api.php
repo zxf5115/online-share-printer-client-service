@@ -16,6 +16,7 @@ $api->version('v1', [
     $api->group(['namespace' => 'System'], function ($api) {
       $api->post('weixin_login', 'LoginController@weixin_login'); // 微信登录
       $api->post('register', 'LoginController@register');
+      $api->post('bind_mobile', 'LoginController@bind_mobile');
       $api->get('logout', 'LoginController@logout'); // 退出
 
       // 系统基础数据路由

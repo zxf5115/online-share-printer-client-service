@@ -1,16 +1,10 @@
 <?php
 namespace App\Http\Controllers\Api\System;
 
-use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redis;
 
 use App\Http\Constant\Code;
-use App\TraitClass\ToolTrait;
-use App\Http\Constant\RedisKey;
-use App\Http\Constant\Parameter;
-use App\Models\Api\Module\Member;
 use App\Http\Controllers\Api\BaseController;
 
 
@@ -22,6 +16,9 @@ use App\Http\Controllers\Api\BaseController;
  */
 class LoginController extends BaseController
 {
+  // 模型名称
+  protected $_model = 'App\Models\Api\Module\Member';
+
   /**
    * @api {post} /api/weixin_login 01. 微信登录
    * @apiDescription 通过第三方软件-微信，进行登录
@@ -65,7 +62,7 @@ class LoginController extends BaseController
       {
         $condition = self::getSimpleWhereData($request->open_id, 'open_id');
 
-        $response = Member::getRow($condition);
+        $response = $this->_model::getRow($condition);
 
         // 用户不存在
         if(is_null($response))
@@ -80,7 +77,7 @@ class LoginController extends BaseController
         }
 
         // 在特定时间内访问次数过多，就触发访问限制
-        if(Member::AccessRestrictions($response))
+        if($this->_model::AccessRestrictions($response))
         {
           return self::error(Code::ACCESS_RESTRICTIONS);
         }
@@ -102,7 +99,7 @@ class LoginController extends BaseController
         }
 
         // 记录登录信息
-        Member::login($response, $request);
+        $this->_model::login($response, $request);
 
         return self::success([
           'code' => 200,
@@ -130,7 +127,6 @@ class LoginController extends BaseController
    * @apiGroup 01. 登录模块
    *
    * @apiParam {string} open_id 微信小程序编号
-   * @apiParam {string} username 登录手机号码
    * @apiParam {string} avatar 会员头像
    * @apiParam {string} nickname 会员姓名
    * @apiParam {string} [sex] 会员性别
@@ -147,14 +143,12 @@ class LoginController extends BaseController
   {
     $messages = [
       'open_id.required'  => '请您输入微信小程序编号',
-      'username.required' => '请您输入登录手机号码',
       'nickname.required' => '请您输入会员姓名',
       'avatar.required'   => '请您上传会员头像',
     ];
 
     $rule = [
       'open_id'  => 'required',
-      'username' => 'required',
       'nickname' => 'required',
       'avatar'   => 'required',
     ];
@@ -172,20 +166,15 @@ class LoginController extends BaseController
 
       try
       {
-        if(empty($request->open_id))
-        {
-          $model = Member::firstOrNew(['apply_id' => $request->apply_id, 'status' => 1]);
-        }
-        else
-        {
-          $model = Member::firstOrNew(['open_id' => $request->open_id, 'status' => 1]);
-        }
+        $model = $this->_model::firstOrNew([
+          'open_id' => $request->open_id,
+          'status' => 1
+        ]);
 
         $model->open_id  = $request->open_id ?? '';
-        $model->apply_id = $request->apply_id ?? '';
         $model->role_id  = 1;
         $model->avatar   = $request->avatar;
-        $model->username = $request->username;
+        $model->username = '';
         $model->nickname = $request->nickname;
         $model->save();
 
@@ -214,26 +203,6 @@ class LoginController extends BaseController
           $model->asset()->create($data);
         }
 
-        $data = [
-          'push_switch'    => 1,
-        ];
-
-        if(!empty($data))
-        {
-          $model->setting()->delete();
-          $model->setting()->create($data);
-        }
-
-        $data = [
-          'vip_id'    => 1,
-        ];
-
-        if(!empty($data))
-        {
-          $model->vipRelevance()->delete();
-          $model->vipRelevance()->create($data);
-        }
-
         DB::commit();
 
         return self::success(Code::message(Code::REGISTER_SUCCESS));
@@ -252,7 +221,68 @@ class LoginController extends BaseController
 
 
   /**
-   * @api {get} /api/logout 12. 退出
+   * @api {post} /api/bind_mobile 03. 绑定手机号码
+   * @apiDescription 绑定用的的手机号码
+   * @apiGroup 01. 登录模块
+   *
+   * @apiParam {string} open_id 微信小程序编号
+   * @apiParam {string} username 手机号码
+   *
+   * @apiSampleRequest /api/bind_mobile
+   * @apiVersion 1.0.0
+   */
+  public function bind_mobile(Request $request)
+  {
+    $messages = [
+      'open_id.required'  => '请您输入微信小程序编号',
+      'username.required' => '请您输入登录账户',
+      'username.regex'    => '手机号码不合法',
+    ];
+
+    $rule = [
+      'open_id'  => 'required',
+      'username' => 'required',
+      'username' => 'regex:/^1[3456789][0-9]{9}$/',     //正则验证
+    ];
+
+    // 验证用户数据内容是否正确
+    $validation = self::validation($request, $messages, $rule);
+
+    if(!$validation['status'])
+    {
+      return $validation['message'];
+    }
+    else
+    {
+      try
+      {
+        $condition = self::getSimpleWhereData($request->open_id, 'open_id');
+
+        $model = $this->_model::getRow($condition);
+
+        if(empty($model->id))
+        {
+          return self::error(Code::MEMBER_EMPTY);
+        }
+
+        $model->username = $request->username;
+        $model->save();
+
+        return self::success(Code::message(Code::HANDLE_SUCCESS));
+      }
+      catch(\Exception $e)
+      {
+        // 记录异常信息
+        self::record($e);
+
+        return self::error(Code::HANDLE_FAILURE);
+      }
+    }
+  }
+
+
+  /**
+   * @api {get} /api/logout 04. 退出
    * @apiDescription 退出登录状态
    * @apiGroup 01. 登录模块
    * @apiPermission jwt

@@ -59,21 +59,6 @@ class RouteServiceProvider extends ServiceProvider
 
 
     /**
-     * 平台端路由
-     */
-    protected function mapPlatformRoutes()
-    {
-        app('Dingo\Api\Routing\Router')->group([
-            'version' => getenv('API_VERSION'),
-            'prefix' => 'platform',
-            'namespace' => $this->namespace,
-        ], function ($api) {
-            require base_path('routes/platform.php');
-        });
-    }
-
-
-    /**
      * API端路由
      */
     protected function mapApiRoutes()

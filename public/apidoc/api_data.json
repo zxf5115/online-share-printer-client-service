@@ -2,7 +2,7 @@
   {
     "type": "get",
     "url": "/api/logout",
-    "title": "12. 退出",
+    "title": "04. 退出",
     "description": "<p>退出登录状态</p>",
     "group": "01._登录模块",
     "permission": [
@@ -43,7 +43,7 @@
   {
     "type": "post",
     "url": "/api/bind_mobile",
-    "title": "08. 绑定手机号码",
+    "title": "03. 绑定手机号码",
     "description": "<p>绑定用的的手机号码</p>",
     "group": "01._登录模块",
     "parameter": {
@@ -54,21 +54,14 @@
             "type": "string",
             "optional": false,
             "field": "open_id",
-            "description": "<p>微信登录编号</p>"
+            "description": "<p>微信小程序编号</p>"
           },
           {
             "group": "Parameter",
             "type": "string",
             "optional": false,
             "field": "username",
-            "description": "<p>登录手机号码</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "string",
-            "optional": false,
-            "field": "sms_code",
-            "description": "<p>验证码</p>"
+            "description": "<p>手机号码</p>"
           }
         ]
       }
@@ -95,16 +88,9 @@
           {
             "group": "Parameter",
             "type": "string",
-            "optional": true,
+            "optional": false,
             "field": "open_id",
-            "description": "<p>微信app编号</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "string",
-            "optional": true,
-            "field": "apply_id",
-            "description": "<p>苹果登录编号</p>"
+            "description": "<p>微信小程序编号</p>"
           },
           {
             "group": "Parameter",
@@ -225,7 +211,7 @@
             "type": "Number",
             "optional": false,
             "field": "role_id",
-            "description": "<p>角色编号</p>"
+            "description": "<p>角色编号 1会员 2店长 3分销商</p>"
           },
           {
             "group": "字段说明|用户",
@@ -238,22 +224,22 @@
             "group": "字段说明|用户",
             "type": "Number",
             "optional": false,
-            "field": "apply_id",
-            "description": "<p>苹果编号</p>"
+            "field": "parent_id",
+            "description": "<p>上级分销商编号</p>"
           },
           {
             "group": "字段说明|用户",
             "type": "Number",
             "optional": false,
-            "field": "inviter_id",
-            "description": "<p>邀请人编号</p>"
+            "field": "level",
+            "description": "<p>分销商级别</p>"
           },
           {
             "group": "字段说明|用户",
-            "type": "Number",
+            "type": "String",
             "optional": false,
-            "field": "member_no",
-            "description": "<p>会员号</p>"
+            "field": "another_name",
+            "description": "<p>分销商别称</p>"
           },
           {
             "group": "字段说明|用户",
@@ -275,38 +261,6 @@
             "optional": false,
             "field": "nickname",
             "description": "<p>会员昵称</p>"
-          }
-        ],
-        "字段说明|角色": [
-          {
-            "group": "字段说明|角色",
-            "type": "String",
-            "optional": false,
-            "field": "id",
-            "description": "<p>角色编号</p>"
-          },
-          {
-            "group": "字段说明|角色",
-            "type": "String",
-            "optional": false,
-            "field": "title",
-            "description": "<p>角色名称</p>"
-          },
-          {
-            "group": "字段说明|角色",
-            "type": "String",
-            "optional": false,
-            "field": "content",
-            "description": "<p>角色描述</p>"
-          }
-        ],
-        "字段说明|贵宾": [
-          {
-            "group": "字段说明|贵宾",
-            "type": "String",
-            "optional": false,
-            "field": "title",
-            "description": "<p>贵宾标题</p>"
           }
         ]
       }
@@ -1277,13 +1231,6 @@
             "group": "字段说明|会员",
             "type": "String",
             "optional": false,
-            "field": "member_no",
-            "description": "<p>会员号</p>"
-          },
-          {
-            "group": "字段说明|会员",
-            "type": "String",
-            "optional": false,
             "field": "avatar",
             "description": "<p>会员头像</p>"
           },
@@ -1445,13 +1392,6 @@
             "group": "字段说明|会员",
             "type": "String",
             "optional": false,
-            "field": "member_no",
-            "description": "<p>会员号</p>"
-          },
-          {
-            "group": "字段说明|会员",
-            "type": "String",
-            "optional": false,
             "field": "avatar",
             "description": "<p>会员头像</p>"
           },
@@ -1558,13 +1498,6 @@
             "optional": false,
             "field": "inviter_id",
             "description": "<p>邀请人编号</p>"
-          },
-          {
-            "group": "字段说明|会员",
-            "type": "String",
-            "optional": false,
-            "field": "member_no",
-            "description": "<p>会员号</p>"
           },
           {
             "group": "字段说明|会员",
