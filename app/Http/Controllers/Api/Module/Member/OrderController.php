@@ -28,19 +28,18 @@ class OrderController extends BaseController
 
   // 关联对像
   protected $_relevance = [
-    'list' => [
-      'courseware',
-    ],
+    'list' => false,
     'view' => [
-      'courseware',
-    ],
+      'manager',
+      'printer',
+    ]
   ];
 
 
   /**
    * @api {get} /api/member/order/list?page={page} 01. 我的订单列表
-   * @apiDescription 获取当前会员课程订单列表(分页)
-   * @apiGroup 35. 会员订单模块
+   * @apiDescription 获取当前会员订单列表(分页)
+   * @apiGroup 23. 会员订单模块
    * @apiPermission jwt
    * @apiHeader {String} Authorization 身份令牌
    * @apiHeaderExample {json} Header-Example:
@@ -52,24 +51,21 @@ class OrderController extends BaseController
    *
    * @apiSuccess (字段说明|订单) {String} id 订单编号
    * @apiSuccess (字段说明|订单) {String} order_no 订单号
+   * @apiSuccess (字段说明|订单) {String} first_level_agent_id 一级代理商自增编号
+   * @apiSuccess (字段说明|订单) {String} second_level_agent_id 二级代理商自增编号
+   * @apiSuccess (字段说明|订单) {String} manager_id 店长自增编号
+   * @apiSuccess (字段说明|订单) {String} printer_id 打印机自增编号
    * @apiSuccess (字段说明|订单) {String} member_id 会员编号
+   * @apiSuccess (字段说明|订单) {String} type 打印类型
+   * @apiSuccess (字段说明|订单) {String} title 打印文件名称
+   * @apiSuccess (字段说明|订单) {String} page_total 文件页数
+   * @apiSuccess (字段说明|订单) {String} print_total 打印份数
    * @apiSuccess (字段说明|订单) {String} pay_money 支付金额
    * @apiSuccess (字段说明|订单) {String} pay_type 支付类型
    * @apiSuccess (字段说明|订单) {String} pay_status 支付状态
    * @apiSuccess (字段说明|订单) {String} pay_time 支付时间
    * @apiSuccess (字段说明|订单) {String} order_status 订单状态
    * @apiSuccess (字段说明|订单) {String} create_time 创建时间
-   * @apiSuccess (字段说明|课程) {Number} id 课程编号
-   * @apiSuccess (字段说明|课程) {String} code 课程代码
-   * @apiSuccess (字段说明|课程) {String} title 课程名称
-   * @apiSuccess (字段说明|课程) {String} picture 课程图片
-   * @apiSuccess (字段说明|课程) {String} content 课程内容
-   * @apiSuccess (字段说明|课程) {String} money 课程价格
-   * @apiSuccess (字段说明|课程) {String} point_total 课程集数
-   * @apiSuccess (字段说明|课程) {String} watch_total 观看总数
-   * @apiSuccess (字段说明|课程) {String} is_shelf 是否上架
-   * @apiSuccess (字段说明|课程) {String} is_trial 是否试看
-   * @apiSuccess (字段说明|课程) {String} is_recommend 是否推荐
    *
    * @apiSampleRequest /api/member/order/list
    * @apiVersion 1.0.0
@@ -104,8 +100,8 @@ class OrderController extends BaseController
 
   /**
    * @api {get} /api/member/order/view/{id} 02. 我的订单详情
-   * @apiDescription 获取当前会员课程订单的详情
-   * @apiGroup 35. 会员订单模块
+   * @apiDescription 获取当前会员订单的详情
+   * @apiGroup 23. 会员订单模块
    * @apiPermission jwt
    * @apiHeader {String} Authorization 身份令牌
    * @apiHeaderExample {json} Header-Example:
@@ -113,28 +109,31 @@ class OrderController extends BaseController
    *   "Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiO"
    * }
    *
-   * @apiParam {int} id 订单编号
+   * @apiParam {int} id 订单自增编号
    *
    * @apiSuccess (字段说明|订单) {String} id 订单编号
    * @apiSuccess (字段说明|订单) {String} order_no 订单号
+   * @apiSuccess (字段说明|订单) {String} first_level_agent_id 一级代理商自增编号
+   * @apiSuccess (字段说明|订单) {String} second_level_agent_id 二级代理商自增编号
+   * @apiSuccess (字段说明|订单) {String} manager_id 店长自增编号
+   * @apiSuccess (字段说明|订单) {String} printer_id 打印机自增编号
    * @apiSuccess (字段说明|订单) {String} member_id 会员编号
+   * @apiSuccess (字段说明|订单) {String} type 打印类型
+   * @apiSuccess (字段说明|订单) {String} title 打印文件名称
+   * @apiSuccess (字段说明|订单) {String} page_total 文件页数
+   * @apiSuccess (字段说明|订单) {String} print_total 打印份数
    * @apiSuccess (字段说明|订单) {String} pay_money 支付金额
    * @apiSuccess (字段说明|订单) {String} pay_type 支付类型
    * @apiSuccess (字段说明|订单) {String} pay_status 支付状态
    * @apiSuccess (字段说明|订单) {String} pay_time 支付时间
    * @apiSuccess (字段说明|订单) {String} order_status 订单状态
    * @apiSuccess (字段说明|订单) {String} create_time 创建时间
-   * @apiSuccess (字段说明|课程) {Number} id 课程编号
-   * @apiSuccess (字段说明|课程) {String} code 课程代码
-   * @apiSuccess (字段说明|课程) {String} title 课程名称
-   * @apiSuccess (字段说明|课程) {String} picture 课程图片
-   * @apiSuccess (字段说明|课程) {String} content 课程内容
-   * @apiSuccess (字段说明|课程) {String} money 课程价格
-   * @apiSuccess (字段说明|课程) {String} point_total 课程集数
-   * @apiSuccess (字段说明|课程) {String} watch_total 观看总数
-   * @apiSuccess (字段说明|课程) {String} is_shelf 是否上架
-   * @apiSuccess (字段说明|课程) {String} is_trial 是否试看
-   * @apiSuccess (字段说明|课程) {String} is_recommend 是否推荐
+   * @apiSuccess (字段说明|店长) {String} id 店长自增编号
+   * @apiSuccess (字段说明|店长) {String} nickanme 店长姓名
+   * @apiSuccess (字段说明|打印机) {String} id 打印机自增编号
+   * @apiSuccess (字段说明|打印机) {String} code 打印机编号
+   * @apiSuccess (字段说明|打印机) {String} model 打印机型号
+   * @apiSuccess (字段说明|打印机) {String} address 打印机地址
    *
    * @apiSampleRequest /api/member/order/view/{id}
    * @apiVersion 1.0.0
@@ -168,8 +167,8 @@ class OrderController extends BaseController
 
   /**
    * @api {post} /api/member/order/handle 03. 创建订单
-   * @apiDescription 当前会员创建课程订单
-   * @apiGroup 35. 会员订单模块
+   * @apiDescription 当前会员创建订单
+   * @apiGroup 23. 会员订单模块
    * @apiPermission jwt
    * @apiHeader {String} Authorization 身份令牌
    * @apiHeaderExample {json} Header-Example:
@@ -177,9 +176,9 @@ class OrderController extends BaseController
    *   "Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiO"
    * }
    *
-   * @apiParam {Array} courseware_id 课程编号数组
+   * @apiParam {Array} printer_id 打印机自增编号
    * @apiParam {String} pay_money 支付金额
-   * @apiParam {String} pay_type 支付类型 1 支付宝 2 微信 3 充值 4 苹果
+   * @apiParam {String} pay_type 支付类型 1 支付宝 2 微信
    *
    * @apiSampleRequest /api/member/order/handle
    * @apiVersion 1.0.0
@@ -187,15 +186,15 @@ class OrderController extends BaseController
   public function handle(Request $request)
   {
     $messages = [
-      'courseware_id.required' => '请您输入课程编号',
-      'pay_money.required'     => '请您输入支付金额',
-      'pay_type.required'      => '请您选择支付类型',
+      'printer_id.required' => '请您输入课程编号',
+      'pay_money.required'  => '请您输入支付金额',
+      'pay_type.required'   => '请您选择支付类型',
     ];
 
     $rule = [
-      'courseware_id' => 'required',
-      'pay_money'     => 'required',
-      'pay_type'      => 'required',
+      'printer_id' => 'required',
+      'pay_money'  => 'required',
+      'pay_type'   => 'required',
     ];
 
     // 验证用户数据内容是否正确
@@ -281,98 +280,9 @@ class OrderController extends BaseController
 
 
   /**
-   * @api {post} /api/member/order/change 04. 修改订单
-   * @apiDescription 当前会员修改订单
-   * @apiGroup 35. 会员订单模块
-   * @apiPermission jwt
-   * @apiHeader {String} Authorization 身份令牌
-   * @apiHeaderExample {json} Header-Example:
-   * {
-   *   "Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiO"
-   * }
-   *
-   * @apiParam {Number} order_id 订单编号
-   * @apiParam {Number} pay_type 支付类型 1 支付宝 2 微信 4 苹果
-   *
-   * @apiSampleRequest /api/member/order/change
-   * @apiVersion 1.0.0
-   */
-  public function change(Request $request)
-  {
-    $messages = [
-      'order_id.required' => '请您输入课程编号',
-      'pay_type.required' => '请您选择支付类型',
-    ];
-
-    $rule = [
-      'order_id' => 'required',
-      'pay_type' => 'required',
-    ];
-
-    // 验证用户数据内容是否正确
-    $validation = self::validation($request, $messages, $rule);
-
-    if(!$validation['status'])
-    {
-      return $validation['message'];
-    }
-    else
-    {
-      DB::beginTransaction();
-
-      try
-      {
-        $condition = self::getCurrentWhereData();
-
-        $where = ['id' => $request->order_id];
-
-        $where = array_merge($condition, $where);
-
-        // 判断订单是否存在
-        $order = Order::getRow($where);
-
-        if(empty($order))
-        {
-          return self::error(Code::CURRENT_ORDER_EMPTY);
-        }
-
-        if(0 != $order->pay_status['value'])
-        {
-          return self::error(Code::CURRENT_ORDER_NO_CHANGE);
-        }
-
-        $order->pay_type   = $request->pay_type;
-        $order->save();
-
-        $data = [
-          'title'     => '订单消息',
-          'content'   => '您的订单已修改',
-        ];
-
-        // 消息推送
-        event(new AuroraEvent(1, $data, $order->member_id));
-
-        DB::commit();
-
-        return self::success(Code::message(Code::HANDLE_SUCCESS));
-      }
-      catch(\Exception $e)
-      {
-        DB::rollback();
-
-        // 记录异常信息
-        self::record($e);
-
-        return self::error(Code::HANDLE_FAILURE);
-      }
-    }
-  }
-
-
-  /**
-   * @api {post} /api/member/order/pay 05. 订单支付
+   * @api {post} /api/member/order/pay 04. 订单支付
    * @apiDescription 当前会员订单支付
-   * @apiGroup 35. 会员订单模块
+   * @apiGroup 23. 会员订单模块
    * @apiPermission jwt
    * @apiHeader {String} Authorization 身份令牌
    * @apiHeaderExample {json} Header-Example:
@@ -495,9 +405,9 @@ class OrderController extends BaseController
 
 
   /**
-   * @api {post} /api/member/order/buy 06. 购物车购买
-   * @apiDescription 当前会员直接购买
-   * @apiGroup 35. 会员订单模块
+   * @api {post} /api/member/order/delete 05. 删除记录
+   * @apiDescription 当前会员把课程删除购物车
+   * @apiGroup 23. 会员订单模块
    * @apiPermission jwt
    * @apiHeader {String} Authorization 身份令牌
    * @apiHeaderExample {json} Header-Example:
@@ -505,25 +415,19 @@ class OrderController extends BaseController
    *   "Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiO"
    * }
    *
-   * @apiParam {array} courseware_id 课程编号数组
-   * @apiParam {String} pay_money 支付金额
-   * @apiParam {String} pay_type 支付类型 1 支付宝 2 微信 3 充值 4 苹果
+   * @apiParam {string} id 订单自增编号
    *
-   * @apiSampleRequest /api/member/order/buy
+   * @apiSampleRequest /api/member/order/delete
    * @apiVersion 1.0.0
    */
-  public function buy(Request $request)
+  public function delete(Request $request)
   {
     $messages = [
-      'courseware_id.required' => '请您输入课程编号',
-      'pay_money.required'     => '请您输入支付金额',
-      'pay_type.required'      => '请您选择支付类型',
+      'id.required' => '请您输入订单自增编号',
     ];
 
     $rule = [
-      'courseware_id' => 'required',
-      'pay_money'     => 'required',
-      'pay_type'      => 'required',
+      'id' => 'required',
     ];
 
     // 验证用户数据内容是否正确
@@ -535,264 +439,14 @@ class OrderController extends BaseController
     }
     else
     {
-      DB::beginTransaction();
-
       try
       {
-        $member_id = self::getCurrentId();
-
-        // 判断课程是否存在
-        foreach($request->courseware_id as $courseware_id)
-        {
-          $courseware = Courseware::getRow(['id' => $courseware_id]);
-
-          if(empty($courseware))
-          {
-            return self::error(Code::COURSE_EMPTY);
-          }
-
-          $where = [
-            'member_id'     => self::getCurrentId(),
-            'courseware_id' => $courseware_id,
-          ];
-
-          $memberCourseware = MemberCourseware::getRow($where);
-
-          // 一门课程只能购买一次
-          if(!empty($memberCourseware->id))
-          {
-            return self::error(Code::COURSE_EXITS);
-          }
-        }
-
-        // 获取当前用户资产
-        $asset = Asset::getRow(['member_id' => $member_id]);
-
-        // 如果当前用户没有资产信息
-        if(empty($asset))
-        {
-          return self::error(Code::CURRENT_MEMBER_ASSET_EMPTY);
-        }
-
-        // 如果订单金额大于当前用户资产总额
-        if($request->pay_money > $asset->money)
-        {
-          return self::error(Code::CURRENT_MEMBER_ASSET_DEFICIENCY);
-        }
-
-        $model = $this->_model::firstOrNew(['id' => $request->id]);
-
-        if(empty($request->id))
-        {
-          $rand = str_pad(rand(1, 999999), 6, 0, STR_PAD_LEFT);
-
-          $model->order_no = date('YmdHis') . $rand;
-        }
-
-        $model->organization_id = self::getOrganizationId();
-        $model->member_id       = self::getCurrentId();
-        $model->pay_money       = $request->pay_money;
-        $model->pay_type        = $request->pay_type;
-        $model->pay_status      = 1;
-        $model->pay_time        = time();
-        $model->save();
-
-        $data = self::packRelevanceData($request, 'courseware_id');
-
-        if(!empty($data))
-        {
-          $model->coursewareRelevance()->delete();
-          $model->coursewareRelevance()->createMany($data);
-        }
-
-        // 添加课程
-        $result = event(new CoursewareEvent($member_id, $request->courseware_id));
-
-        if(empty($result[0]))
-        {
-          return self::error(Code::COURSEWARE_ADD_ERROR);
-        }
-
-        // 扣除费用
-        $result = event(new AssetEvent($member_id, $model->pay_money, 2));
-
-        if(empty($result[0]))
-        {
-          return self::error(Code::PAY_ERROR);
-        }
-
-        // 增加资产消费记录
-        event(new MoneyEvent($member_id, $model->pay_money, 2));
-
-        DB::commit();
-
-        return self::success(Code::message(Code::PAY_SUCCESS));
-      }
-      catch(\Exception $e)
-      {
-        DB::rollback();
-
-        // 记录异常信息
-        self::record($e);
-
-        return self::error(Code::HANDLE_FAILURE);
-      }
-    }
-  }
-
-
-
-  /**
-   * @api {post} /api/member/order/finish 07. 订单完成
-   * @apiDescription 当前会员标记订单完成
-   * @apiGroup 35. 会员订单模块
-   * @apiPermission jwt
-   * @apiHeader {String} Authorization 身份令牌
-   * @apiHeaderExample {json} Header-Example:
-   * {
-   *   "Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiO"
-   * }
-   *
-   * @apiParam {string} order_id 订单编号
-   *
-   * @apiSampleRequest /api/member/order/finish
-   * @apiVersion 1.0.0
-   */
-  public function finish(Request $request)
-  {
-    $messages = [
-      'order_id.required' => '请您输入订单编号',
-    ];
-
-    $rule = [
-      'order_id' => 'required',
-    ];
-
-    // 验证用户数据内容是否正确
-    $validation = self::validation($request, $messages, $rule);
-
-    if(!$validation['status'])
-    {
-      return $validation['message'];
-    }
-    else
-    {
-      DB::beginTransaction();
-
-      try
-      {
-        $condition = self::getCurrentWhereData();
-
-        $where = ['id' => $request->order_id];
-
-        $condition = array_merge($condition, $where);
-
-        $model = $this->_model::getRow($condition);
-
-        $model->order_status = 2;
-        $model->save();
-
-        $data = [
-          'title'     => '订单消息',
-          'content'   => '您的订单已完成',
-        ];
-
-        // 消息推送
-        event(new AuroraEvent(1, $data, $model->member_id));
-
-        DB::commit();
+        $this->_model::destroy($request->id);
 
         return self::success(Code::message(Code::HANDLE_SUCCESS));
       }
       catch(\Exception $e)
       {
-        DB::rollback();
-
-        // 记录异常信息
-        self::record($e);
-
-        return self::error(Code::HANDLE_FAILURE);
-      }
-    }
-  }
-
-
-  /**
-   * @api {post} /api/member/order/cancel 08. 订单取消
-   * @apiDescription 当前会员取消订单
-   * @apiGroup 35. 会员订单模块
-   * @apiPermission jwt
-   * @apiHeader {String} Authorization 身份令牌
-   * @apiHeaderExample {json} Header-Example:
-   * {
-   *   "Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiO"
-   * }
-   *
-   * @apiParam {string} order_id 订单编号
-   *
-   * @apiSampleRequest /api/member/order/cancel
-   * @apiVersion 1.0.0
-   */
-  public function cancel(Request $request)
-  {
-    $messages = [
-      'order_id.required' => '请您输入订单编号',
-    ];
-
-    $rule = [
-      'order_id' => 'required',
-    ];
-
-    // 验证用户数据内容是否正确
-    $validation = self::validation($request, $messages, $rule);
-
-    if(!$validation['status'])
-    {
-      return $validation['message'];
-    }
-    else
-    {
-      DB::beginTransaction();
-
-      try
-      {
-        $condition = self::getCurrentWhereData();
-
-        $where = ['id' => $request->order_id];
-
-        $condition = array_merge($condition, $where);
-
-        $model = $this->_model::getRow($condition);
-
-        if(empty($model->id))
-        {
-          return self::error(Code::CURRENT_ORDER_EMPTY);
-        }
-
-        if(0 != $model->order_status['value'])
-        {
-          return self::error(Code::CURRENT_ORDER_NO_CANCEL);
-        }
-
-        $model->order_status = 3;
-        $model->save();
-
-        $data = [
-          'title'     => '订单消息',
-          'content'   => '您的订单已取消',
-        ];
-
-        // 消息推送
-        event(new AuroraEvent(1, $data, $model->member_id));
-
-        DB::commit();
-
-        return self::success(Code::message(Code::HANDLE_SUCCESS));
-      }
-      catch(\Exception $e)
-      {
-        DB::rollback();
-
         // 记录异常信息
         self::record($e);
 

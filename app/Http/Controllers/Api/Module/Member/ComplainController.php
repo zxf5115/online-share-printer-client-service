@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Api\Module\Member;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 use App\Http\Constant\Code;
 use App\Http\Controllers\Api\BaseController;
@@ -19,12 +20,15 @@ class ComplainController extends BaseController
 
   // 客户端搜索字段
   protected $_params = [
-    'category_id',
+    'type' => 2
   ];
 
   // 关联对象
   protected $_relevance = [
-    'category'
+    'list' => false,
+    'view' => [
+      'resource'
+    ]
   ];
 
 
@@ -40,15 +44,11 @@ class ComplainController extends BaseController
    * }
    *
    * @apiParam {int} page 当前页数
-   * @apiParam {int} category_id 投诉位编号
    *
-   * @apiSuccess (字段说明|投诉) {Number} id 投诉编号
-   * @apiSuccess (字段说明|投诉) {String} title 投诉标题
+   * @apiSuccess (字段说明|投诉) {Number} id 投诉自增编号
    * @apiSuccess (字段说明|投诉) {String} content 投诉内容
-   * @apiSuccess (字段说明|投诉) {String} customer_name 客户姓名
    * @apiSuccess (字段说明|投诉) {String} contact 联系方式
    * @apiSuccess (字段说明|投诉) {Number} create_time 投诉时间
-   * @apiSuccess (字段说明|投诉分类) {Number} title 投诉分类标题
    *
    * @apiSampleRequest /api/member/complain/list
    * @apiVersion 1.0.0
@@ -92,13 +92,11 @@ class ComplainController extends BaseController
    *   "Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiO"
    * }
    *
-   * @apiSuccess (字段说明|投诉) {Number} id 投诉编号
-   * @apiSuccess (字段说明|投诉) {String} title 投诉标题
+   * @apiSuccess (字段说明|投诉) {Number} id 投诉自增编号
    * @apiSuccess (字段说明|投诉) {String} content 投诉内容
-   * @apiSuccess (字段说明|投诉) {String} customer_name 客户姓名
    * @apiSuccess (字段说明|投诉) {String} contact 联系方式
    * @apiSuccess (字段说明|投诉) {Number} create_time 投诉时间
-   * @apiSuccess (字段说明|投诉分类) {Number} title 投诉分类标题
+   * @apiSuccess (字段说明|投诉资源) {Number} picture 投诉图片地址
    *
    * @apiSampleRequest /api/member/complain/view/{id}
    * @apiVersion 1.0.0
@@ -136,11 +134,20 @@ class ComplainController extends BaseController
    *   "Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiO"
    * }
    *
-   * @apiParam {string} category_id 投诉类型（不可为空）
-   * @apiParam {string} title 投诉标题（不可为空）
    * @apiParam {string} content 投诉内容
-   * @apiParam {string} customer_name 客户姓名（不可为空）
+   * @apiParam {json} picture 投诉图片
    * @apiParam {string} contact 联系方式（不可为空）
+   *
+   * @apiParamExample {json} Param-Example:
+   * {
+   *   "content": "1231312313",
+   *   "contact": "18201018926",
+   *   "picture": [
+   *     "111",
+   *     "222",
+   *     "333"
+   *   ]
+   * }
    *
    * @apiSampleRequest /api/member/complain/handle
    * @apiVersion 1.0.0
@@ -148,17 +155,13 @@ class ComplainController extends BaseController
   public function handle(Request $request)
   {
     $messages = [
-      'category_id.required'   => '请您输入投诉分类',
-      'title.required'         => '请您输入投诉标题',
-      'customer_name.required' => '请您输入客户姓名',
+      'content.required'       => '请您输入投诉内容',
       'contact.required'       => '请您输入联系方式',
     ];
 
     $rule = [
-      'category_id'   => 'required',
-      'title' => 'required',
-      'customer_name' => 'required',
-      'contact'       => 'required',
+      'content' => 'required',
+      'contact' => 'required',
     ];
 
     // 验证用户数据内容是否正确
@@ -170,22 +173,34 @@ class ComplainController extends BaseController
     }
     else
     {
+      DB::beginTransaction();
+
       try
       {
         $model = $this->_model::firstOrNew(['id' => $request->id]);
 
-        $model->category_id   = $request->category_id;
-        $model->member_id     = self::getCurrentId();
-        $model->title         = $request->title;
-        $model->content       = $request->content ?? '';
-        $model->customer_name = $request->customer_name;
-        $model->contact       = $request->contact;
+        $model->member_id = self::getCurrentId();
+        $model->type      = 2;
+        $model->content   = $request->content ?? '';
+        $model->contact   = $request->contact;
         $model->save();
+
+        $data = self::packRelevanceData($request, 'picture');
+
+        if(!empty($data))
+        {
+          $model->resource()->delete();
+          $model->resource()->createMany($data);
+        }
+
+        DB::commit();
 
         return self::success(Code::message(Code::HANDLE_SUCCESS));
       }
       catch(\Exception $e)
       {
+        DB::rollback();
+
         // 记录异常信息
         self::record($e);
 

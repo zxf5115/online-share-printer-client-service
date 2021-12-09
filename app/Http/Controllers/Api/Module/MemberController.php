@@ -29,18 +29,9 @@ class MemberController extends BaseController
   protected $_relevance = [
     'archive' => [
       'archive',
-      'certification',
-    ],
-    'asset' => [
-      'asset'
-    ],
-    'status' => [
-      'archive',
-      'relevance'
     ],
     'data' => [
       'archive',
-      'certification',
     ],
   ];
 
@@ -58,16 +49,11 @@ class MemberController extends BaseController
    *
    * @apiSuccess (字段说明|会员) {String} id 会员编号
    * @apiSuccess (字段说明|会员) {String} role_id 角色编号
-   * @apiSuccess (字段说明|会员) {String} inviter_id 邀请人编号
    * @apiSuccess (字段说明|会员) {String} avatar 会员头像
    * @apiSuccess (字段说明|会员) {String} username 登录账户
    * @apiSuccess (字段说明|会员) {String} nickname 会员姓名
    * @apiSuccess (字段说明|档案) {String} sex 性别
    * @apiSuccess (字段说明|档案) {String} age 年龄
-   * @apiSuccess (字段说明|档案) {String} attention_total 关注总数
-   * @apiSuccess (字段说明|档案) {String} fans_total 粉丝总数
-   * @apiSuccess (字段说明|档案) {String} approval_total 点赞总数
-   * @apiSuccess (字段说明|档案) {String} accepted_total 获赞总数
    * @apiSuccess (字段说明|档案) {String} province_id 省
    * @apiSuccess (字段说明|档案) {String} city_id 市
    * @apiSuccess (字段说明|档案) {String} region_id 县
@@ -102,115 +88,9 @@ class MemberController extends BaseController
   }
 
 
-  /**
-   * @api {get} /api/member/asset 02. 当前会员资产
-   * @apiDescription 获取当前会员的资产信息
-   * @apiGroup 20. 会员模块
-   * @apiPermission jwt
-   * @apiHeader {String} Authorization 身份令牌
-   * @apiHeaderExample {json} Header-Example:
-   * {
-   *   "Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiO"
-   * }
-   *
-   * @apiSuccess (字段说明|会员) {String} id 会员编号
-   * @apiSuccess (字段说明|会员) {String} role_id 角色编号
-   * @apiSuccess (字段说明|会员) {String} inviter_id 邀请人编号
-   * @apiSuccess (字段说明|会员) {String} avatar 会员头像
-   * @apiSuccess (字段说明|会员) {String} username 登录账户
-   * @apiSuccess (字段说明|会员) {String} nickname 会员姓名
-   * @apiSuccess (字段说明|资产) {String} money 充值金额
-   *
-   * @apiSampleRequest /api/member/asset
-   * @apiVersion 1.0.0
-   */
-  public function asset(Request $request)
-  {
-    try
-    {
-      // 获取当前会员基础查询条件
-      $condition = self::getCurrentWhereData('id');
-
-      $condition = array_merge($condition, $this->_where);
-
-      // 获取关联对象
-      $relevance = self::getRelevanceData($this->_relevance, 'asset');
-
-      $response = $this->_model::getRow($condition, $relevance);
-
-      return self::success($response);
-    }
-    catch(\Exception $e)
-    {
-      // 记录异常信息
-      self::record($e);
-
-      return self::error(Code::ERROR);
-    }
-  }
-
-
 
   /**
-   * @api {get} /api/member/data 03. 会员数据
-   * @apiDescription 根据会员编号获取会员数据
-   * @apiGroup 20. 会员模块
-   * @apiPermission jwt
-   * @apiHeader {String} Authorization 身份令牌
-   * @apiHeaderExample {json} Header-Example:
-   * {
-   *   "Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiO"
-   * }
-   *
-   * @apiParam {int} id 会员编号
-   *
-   * @apiSuccess (字段说明|会员) {String} id 会员编号
-   * @apiSuccess (字段说明|会员) {String} role_id 角色编号
-   * @apiSuccess (字段说明|会员) {String} inviter_id 邀请人编号
-   * @apiSuccess (字段说明|会员) {String} avatar 会员头像
-   * @apiSuccess (字段说明|会员) {String} username 登录账户
-   * @apiSuccess (字段说明|会员) {String} nickname 会员姓名
-   * @apiSuccess (字段说明|档案) {String} sex 性别
-   * @apiSuccess (字段说明|档案) {String} age 年龄
-   * @apiSuccess (字段说明|档案) {String} attention_total 关注总数
-   * @apiSuccess (字段说明|档案) {String} fans_total 粉丝总数
-   * @apiSuccess (字段说明|档案) {String} approval_total 点赞总数
-   * @apiSuccess (字段说明|档案) {String} accepted_total 获赞总数
-   * @apiSuccess (字段说明|档案) {String} province_id 省
-   * @apiSuccess (字段说明|档案) {String} city_id 市
-   * @apiSuccess (字段说明|档案) {String} region_id 县
-   * @apiSuccess (字段说明|档案) {String} address 详细地址
-   *
-   * @apiSampleRequest /api/member/data
-   * @apiVersion 1.0.0
-   */
-  public function data(Request $request)
-  {
-    try
-    {
-      $condition = self::getSimpleWhereData($request->id);
-
-      // 获取关联对象
-      $relevance = self::getRelevanceData($this->_relevance, 'data');
-
-      $response = $this->_model::getRow($condition, $relevance);
-
-      return self::success($response);
-    }
-    catch(\Exception $e)
-    {
-      // 记录异常信息
-      self::record($e);
-
-      return self::error(Code::ERROR);
-    }
-  }
-
-
-
-
-  /**
-   * @api {get} /api/member/status 04. 当前会员是否填写资料
+   * @api {get} /api/member/status 02. 当前会员是否填写资料
    * @apiDescription 获取当前会员是否填写资料信息
    * @apiGroup 20. 会员模块
    * @apiPermission jwt
@@ -236,10 +116,7 @@ class MemberController extends BaseController
 
       $condition = array_merge($condition, $this->_where);
 
-      // 获取关联对象
-      $relevance = self::getRelevanceData($this->_relevance, 'status');
-
-      $result = $this->_model::getRow($condition, $relevance);
+      $result = $this->_model::getRow($condition);
 
       if(!empty($result) || !empty($result->archive))
       {
@@ -259,8 +136,8 @@ class MemberController extends BaseController
 
 
   /**
-   * @api {post} /api/member/handle 05. 编辑会员信息
-   * @apiDescription 编辑会员信息
+   * @api {post} /api/member/handle 03. 当前会员填写信息
+   * @apiDescription 当前会员填写信息
    * @apiGroup 20. 会员模块
    * @apiPermission jwt
    * @apiHeader {String} Authorization 身份令牌
@@ -346,81 +223,11 @@ class MemberController extends BaseController
   }
 
 
-  /**
-   * @api {post} /api/member/password 06. 修改会员密码
-   * @apiDescription 修改会员密码
-   * @apiGroup 20. 会员模块
-   * @apiPermission jwt
-   * @apiHeader {String} Authorization 身份令牌
-   * @apiHeaderExample {json} Header-Example:
-   * {
-   *   "Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiO"
-   * }
-   *
-   * @apiParam {String} old_password 旧密码
-   * @apiParam {String} password 新密码
-   * @apiParam {String} password_confirmation 确认密码
-   *
-   * @apiSampleRequest /api/member/password
-   * @apiVersion 1.0.0
-   */
-  public function password(Request $request)
-  {
-    $messages = [
-      'old_password.required' => '请您输入旧密码',
-      'password.required'     => '请您输入新密码',
-      'password.between'      => '输入的密码必须是6-16位',
-      'password.confirmed'    => '您输入的两次密码信息不一致',
-    ];
 
-    $rule = [
-      'old_password' => 'required',
-      'password'     => 'required|between:6,16|confirmed',
-    ];
-
-    // 验证用户数据内容是否正确
-    $validation = self::validation($request, $messages, $rule);
-
-    if(!$validation['status'])
-    {
-      return $validation['message'];
-    }
-    else
-    {
-      try
-      {
-        $member_id = self::getCurrentId();
-
-        $model = $this->_model::find($member_id);
-
-        $status = $this->_model::checkPassword($model, $request->old_password);
-
-        // 旧密码是否正确
-        if($status)
-        {
-          return self::error(Code::OLD_PASSWORD_ERROR);
-        }
-
-        $password = $this->_model::generate($request->password);
-
-        $model->password = $password;
-        $model->save();
-
-        return self::success(Code::message(Code::HANDLE_SUCCESS));
-      }
-      catch(\Exception $e)
-      {
-        // 记录异常信息
-        self::record($e);
-
-        return self::error(Code::HANDLE_FAILURE);
-      }
-    }
-  }
 
 
   /**
-   * @api {post} /api/member/change_code 07. 修改验证码
+   * @api {post} /api/member/change_code 04. 手机验变更证码[略]
    * @apiDescription 获取当前会员的修改验证码
    * @apiGroup 20. 会员模块
    * @apiPermission jwt
@@ -485,7 +292,7 @@ class MemberController extends BaseController
 
 
   /**
-   * @api {post} /api/member/change_mobile 08. 修改手机号码
+   * @api {post} /api/member/change_mobile 05. 变更手机号码[略]
    * @apiDescription 修改当前会员的手机号码
    * @apiGroup 20. 会员模块
    * @apiPermission jwt
@@ -566,6 +373,57 @@ class MemberController extends BaseController
 
         return self::error(Code::HANDLE_FAILURE);
       }
+    }
+  }
+
+
+  /**
+   * @api {get} /api/member/data 06. 会员数据
+   * @apiDescription 根据会员编号获取会员数据
+   * @apiGroup 20. 会员模块
+   * @apiPermission jwt
+   * @apiHeader {String} Authorization 身份令牌
+   * @apiHeaderExample {json} Header-Example:
+   * {
+   *   "Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiO"
+   * }
+   *
+   * @apiParam {int} id 会员编号
+   *
+   * @apiSuccess (字段说明|会员) {String} id 会员编号
+   * @apiSuccess (字段说明|会员) {String} role_id 角色编号
+   * @apiSuccess (字段说明|会员) {String} avatar 会员头像
+   * @apiSuccess (字段说明|会员) {String} username 登录账户
+   * @apiSuccess (字段说明|会员) {String} nickname 会员姓名
+   * @apiSuccess (字段说明|档案) {String} sex 性别
+   * @apiSuccess (字段说明|档案) {String} age 年龄
+   * @apiSuccess (字段说明|档案) {String} province_id 省
+   * @apiSuccess (字段说明|档案) {String} city_id 市
+   * @apiSuccess (字段说明|档案) {String} region_id 县
+   * @apiSuccess (字段说明|档案) {String} address 详细地址
+   *
+   * @apiSampleRequest /api/member/data
+   * @apiVersion 1.0.0
+   */
+  public function data(Request $request)
+  {
+    try
+    {
+      $condition = self::getSimpleWhereData($request->id);
+
+      // 获取关联对象
+      $relevance = self::getRelevanceData($this->_relevance, 'data');
+
+      $response = $this->_model::getRow($condition, $relevance);
+
+      return self::success($response);
+    }
+    catch(\Exception $e)
+    {
+      // 记录异常信息
+      self::record($e);
+
+      return self::error(Code::ERROR);
     }
   }
 }

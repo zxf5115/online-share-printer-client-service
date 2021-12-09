@@ -14,7 +14,6 @@ class Order extends Common
   // 隐藏的属性
   public $hidden = [
     'organization_id',
-    'member_id',
     'status',
     'update_time'
   ];
