@@ -2,6 +2,7 @@
 namespace App\Models\Common\Module\Order;
 
 use App\Models\Base;
+use App\Enum\Module\Order\LogEnum;
 
 /**
  * @author zhangxiaofei [<1326336909@qq.com>]
@@ -30,29 +31,25 @@ class Log extends Base
   public $appends = [];
 
 
-
-  // 关联函数 ------------------------------------------------------
-
-
   /**
    * @author zhangxiaofei [<1326336909@qq.com>]
-   * @dateTime 2021-07-01
+   * @dateTime 2021-06-29
    * ------------------------------------------
-   * 订单日志与会员关联函数
+   * 打印类型封装
    * ------------------------------------------
    *
-   * 订单日志与会员关联函数
+   * 打印类型封装
    *
+   * @param [type] $value [description]
    * @return [type]
    */
-  public function member()
+  public function getTypeAttribute($value)
   {
-    return $this->belongsTo(
-      'App\Models\Common\Module\Member',
-      'member_id',
-      'id'
-    )->where(['status'=>1]);
+    return LogEnum::getTypeStatus($value);
   }
+
+
+  // 关联函数 ------------------------------------------------------
 
 
   /**

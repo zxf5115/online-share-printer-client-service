@@ -1,46 +1,43 @@
 <?php
-namespace App\Models\Api\Module\Repair;
+namespace App\Models\Api\Module\Order;
 
-use App\Models\Common\Module\Repair\Category as Common;
-
+use App\Models\Common\Module\Order\Log as Common;
 
 /**
  * @author zhangxiaofei [<1326336909@qq.com>]
- * @dateTime 2021-11-25
+ * @dateTime 2021-11-24
  *
- * 报修分类模型类
+ * 订单日志模型类
  */
-class Category extends Common
+class Log extends Common
 {
   // 隐藏的属性
   public $hidden = [
     'organization_id',
-    'position_id',
-    'sort',
     'status',
     'create_time',
     'update_time'
   ];
 
-
   // 关联函数 ------------------------------------------------------
+
 
   /**
    * @author zhangxiaofei [<1326336909@qq.com>]
-   * @dateTime 2021-11-25
+   * @dateTime 2021-07-07
    * ------------------------------------------
-   * 报修分类与报修关联函数
+   * 订单日志与订单关联函数
    * ------------------------------------------
    *
-   * 报修分类与报修关联函数
+   * 订单日志与订单关联函数
    *
-   * @return [关联对象]
+   * @return [type]
    */
-  public function repair()
+  public function order()
   {
-    return $this->hasMany(
-      'App\Models\Api\Module\Repair',
-      'category_id',
+    return $this->belongsTo(
+      'App\Models\Api\Module\Order',
+      'order_id',
       'id'
     );
   }

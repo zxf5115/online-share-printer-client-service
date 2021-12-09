@@ -5,23 +5,21 @@ use App\Models\Base;
 
 /**
  * @author zhangxiaofei [<1326336909@qq.com>]
- * @dateTime 2020-12-19
+ * @dateTime 2021-09-25
  *
- * 机构资产模型类
+ * 机构资源模型类
  */
-class Asset extends Base
+class Resource extends Base
 {
   // 表名
-  public $table = "module_organization_asset";
+  public $table = "module_organization_resource";
 
   // 可以批量修改的字段
   public $fillable = [
     'id',
-    'organization_id',
-    'member_id',
-    'red_envelope',
-    'lollipop',
-    'production',
+    'manager_id',
+    'business_license',
+    'contract',
   ];
 
   // 隐藏的属性
@@ -38,19 +36,19 @@ class Asset extends Base
 
   /**
    * @author zhangxiaofei [<1326336909@qq.com>]
-   * @dateTime 2021-12-06
+   * @dateTime 2021-09-25
    * ------------------------------------------
-   * 机构资产与机构分红关联表
+   * 代理商资源与会代理商关联表
    * ------------------------------------------
    *
-   * 机构资产与机构分红关联表
+   * 代理商资源与会代理商关联表
    *
    * @return [关联对象]
    */
-  public function obtain()
+  public function organization()
   {
-    return $this->hasMany(
-      'App\Models\Common\Module\Organization\Obtain',
+    return $this->belongsTo(
+      'App\Models\Common\Module\Organization',
       'member_id',
       'id'
     );

@@ -1,46 +1,46 @@
 <?php
-namespace App\Models\Api\Module;
+namespace App\Models\Api\Module\Outbound;
 
-use App\Models\Common\Module\Complain as Common;
+use App\Models\Common\Module\Outbound\Detail as Common;
 
 /**
  * @author zhangxiaofei [<1326336909@qq.com>]
- * @dateTime 2020-10-06
+ * @dateTime 2021-11-24
  *
- * 投诉模型类
+ * 出库明细模型类
  */
-class Complain extends Common
+class Detail extends Common
 {
   // 隐藏的属性
   public $hidden = [
     'organization_id',
+    'outbound_id',
     'member_id',
-    'type',
-    'read_status',
     'status',
+    'create_time',
     'update_time'
   ];
 
-
   // 关联函数 ------------------------------------------------------
+
 
   /**
    * @author zhangxiaofei [<1326336909@qq.com>]
-   * @dateTime 2021-12-07
+   * @dateTime 2021-11-16
    * ------------------------------------------
-   * 投诉与投诉资源关联表
+   * 出库详情与出库关联表
    * ------------------------------------------
    *
-   * 投诉与投诉资源关联表
+   * 出库详情与出库关联表
    *
    * @return [关联对象]
    */
-  public function resource()
+  public function outbound()
   {
-    return $this->hasMany(
-      'App\Models\Api\Module\Complain\Resource',
-      'complain_id',
-      'id',
+    return $this->belongsTo(
+      'App\Models\Api\Module\Outbound',
+      'outbound_id',
+      'id'
     );
   }
 }

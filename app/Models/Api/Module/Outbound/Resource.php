@@ -1,46 +1,46 @@
 <?php
-namespace App\Models\Api\Module\Repair;
+namespace App\Models\Api\Module\Outbound;
 
-use App\Models\Common\Module\Repair\Category as Common;
-
+use App\Models\Common\Module\Outbound\Resource as Common;
 
 /**
  * @author zhangxiaofei [<1326336909@qq.com>]
- * @dateTime 2021-11-25
+ * @dateTime 2021-11-24
  *
- * 报修分类模型类
+ * 出库资源模型类
  */
-class Category extends Common
+class Resource extends Common
 {
   // 隐藏的属性
   public $hidden = [
+    'id',
     'organization_id',
-    'position_id',
-    'sort',
+    'outbound_id',
+    'device_code',
+    'picture',
     'status',
-    'create_time',
     'update_time'
   ];
 
-
   // 关联函数 ------------------------------------------------------
+
 
   /**
    * @author zhangxiaofei [<1326336909@qq.com>]
-   * @dateTime 2021-11-25
+   * @dateTime 2021-11-16
    * ------------------------------------------
-   * 报修分类与报修关联函数
+   * 出库物流与出库关联表
    * ------------------------------------------
    *
-   * 报修分类与报修关联函数
+   * 出库物流与出库关联表
    *
    * @return [关联对象]
    */
-  public function repair()
+  public function outbound()
   {
-    return $this->hasMany(
-      'App\Models\Api\Module\Repair',
-      'category_id',
+    return $this->belongsTo(
+      'App\Models\Api\Module\Outbound',
+      'outbound_id',
       'id'
     );
   }

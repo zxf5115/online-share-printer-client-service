@@ -1,44 +1,85 @@
 <?php
-namespace App\Models\Api\Module;
+namespace App\Models\Common\Module;
 
-use App\Models\Common\Module\Order as Common;
+use App\Models\Base;
+use App\Enum\Module\Inventory\InventoryEnum;
 
 /**
  * @author zhangxiaofei [<1326336909@qq.com>]
- * @dateTime 2021-06-29
+ * @dateTime 2021-09-13
  *
- * 课程订单模型类
+ * 库存模型类
  */
-class Order extends Common
+class Inventory extends Base
 {
+  // 表名
+  protected $table = "module_inventory";
+
   // 隐藏的属性
-  public $hidden = [
-    'organization_id',
-    'member_id',
-    'status',
+  protected $hidden = [
     'update_time'
   ];
+
+  // 追加到模型数组表单的访问器
+  protected $appends = [];
+
+  // 批量添加
+  protected $fillable = ['id'];
+
+
+  /**
+   * @author zhangxiaofei [<1326336909@qq.com>]
+   * @dateTime 2021-06-29
+   * ------------------------------------------
+   * 库存类型封装
+   * ------------------------------------------
+   *
+   * 库存类型封装
+   *
+   * @param [type] $value [description]
+   * @return [type]
+   */
+  public function getTypeAttribute($value)
+  {
+    return InventoryEnum::getTypeStatus($value);
+  }
+
+  /**
+   * @author zhangxiaofei [<1326336909@qq.com>]
+   * @dateTime 2021-06-29
+   * ------------------------------------------
+   * 设备状态封装
+   * ------------------------------------------
+   *
+   * 设备状态封装
+   *
+   * @param [type] $value [description]
+   * @return [type]
+   */
+  public function getEquipmentStatusAttribute($value)
+  {
+    return InventoryEnum::getEquipmentStatus($value);
+  }
 
 
   // 关联函数 ------------------------------------------------------
 
-
   /**
    * @author zhangxiaofei [<1326336909@qq.com>]
-   * @dateTime 2021-06-29
+   * @dateTime 2021-09-13
    * ------------------------------------------
-   * 订单与一级代理商关联函数
+   * 库存与库存分类关联函数
    * ------------------------------------------
    *
-   * 订单与一级代理商关联函数
+   * 库存与库存分类关联函数
    *
    * @return [关联对象]
    */
-  public function first()
+  public function category()
   {
     return $this->belongsTo(
-      'App\Models\Api\Module\Organization',
-      'first_level_agent_id',
+      'App\Models\Common\Module\Repair\Category',
+      'category_id',
       'id'
     );
   }
@@ -46,61 +87,19 @@ class Order extends Common
 
   /**
    * @author zhangxiaofei [<1326336909@qq.com>]
-   * @dateTime 2021-06-29
+   * @dateTime 2021-09-13
    * ------------------------------------------
-   * 订单与二级代理商关联函数
-   * ------------------------------------------
-   *
-   * 订单与二级代理商关联函数
-   *
-   * @return [关联对象]
-   */
-  public function second()
-  {
-    return $this->belongsTo(
-      'App\Models\Api\Module\Organization',
-      'second_level_agent_id',
-      'id'
-    );
-  }
-
-
-  /**
-   * @author zhangxiaofei [<1326336909@qq.com>]
-   * @dateTime 2021-06-29
-   * ------------------------------------------
-   * 订单与店长关联函数
+   * 库存与会员关联表
    * ------------------------------------------
    *
-   * 订单与店长关联函数
-   *
-   * @return [关联对象]
-   */
-  public function manager()
-  {
-    return $this->belongsTo(
-      'App\Models\Api\Module\Organization',
-      'manager_id',
-      'id'
-    );
-  }
-
-
-  /**
-   * @author zhangxiaofei [<1326336909@qq.com>]
-   * @dateTime 2021-11-29
-   * ------------------------------------------
-   * 订单与会员关联函数
-   * ------------------------------------------
-   *
-   * 订单与会员关联函数
+   * 库存与会员关联表
    *
    * @return [关联对象]
    */
   public function member()
   {
     return $this->belongsTo(
-      'App\Models\Api\Module\Member',
+      'App\Models\Common\Module\Organization',
       'member_id',
       'id'
     );
@@ -109,19 +108,19 @@ class Order extends Common
 
   /**
    * @author zhangxiaofei [<1326336909@qq.com>]
-   * @dateTime 2021-11-29
+   * @dateTime 2021-09-13
    * ------------------------------------------
-   * 订单与打印机关联函数
+   * 库存与打印机关联表
    * ------------------------------------------
    *
-   * 订单与打印机关联函数
+   * 库存与打印机关联表
    *
    * @return [关联对象]
    */
   public function printer()
   {
     return $this->belongsTo(
-      'App\Models\Api\Module\Printer',
+      'App\Models\Common\Module\Printer',
       'printer_id',
       'id'
     );
@@ -130,20 +129,20 @@ class Order extends Common
 
   /**
    * @author zhangxiaofei [<1326336909@qq.com>]
-   * @dateTime 2021-11-08
+   * @dateTime 2021-09-13
    * ------------------------------------------
-   * 订单与订单日志关联函数
+   * 库存与打印机关联表
    * ------------------------------------------
    *
-   * 订单与订单日志关联函数
+   * 库存与打印机关联表
    *
    * @return [关联对象]
    */
   public function log()
   {
     return $this->hasMany(
-      'App\Models\Api\Module\Order\Log',
-      'order_id',
+      'App\Models\Common\Module\Inventory\Log',
+      'inventory_id',
       'id',
     );
   }

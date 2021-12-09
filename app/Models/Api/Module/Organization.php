@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\DB;
 
 use App\TraitClass\ToolTrait;
 use App\Http\Constant\Parameter;
+use App\Models\Common\Module\Organization\Obtain;
 use App\Models\Common\Module\Organization as Common;
 
 
@@ -95,41 +96,59 @@ class Organization extends Common
   }
 
 
-
-
   // 关联函数 ------------------------------------------------------
 
 
   /**
    * @author zhangxiaofei [<1326336909@qq.com>]
-   * @dateTime 2021-06-08
+   * @dateTime 2021-09-17
    * ------------------------------------------
-   * 学员与机构关联表
+   * 机构与上级机构关联函数
    * ------------------------------------------
    *
-   * 学员与机构关联表
+   * 机构与上级机构关联函数
    *
    * @return [关联对象]
    */
-  public function organization()
+  public function parent()
   {
     return $this->belongsTo(
       'App\Models\Api\Module\Organization',
-      'organization_id',
+      'parent_id',
       'id'
     );
   }
 
+
+  /**
+   * @author zhangxiaofei [<1326336909@qq.com>]
+   * @dateTime 2021-09-24
+   * ------------------------------------------
+   * 机构与下级机构关联函数
+   * ------------------------------------------
+   *
+   * 机构与下级机构关联函数
+   *
+   * @return [关联对象]
+   */
+  public function children()
+  {
+    return $this->hasMany(
+      'App\Models\Api\Module\Organization',
+      'id',
+      'parent_id'
+    );
+  }
 
 
   /**
    * @author zhangxiaofei [<1326336909@qq.com>]
    * @dateTime 2021-06-08
    * ------------------------------------------
-   * 会员与角色关联函数
+   * 机构与角色关联函数
    * ------------------------------------------
    *
-   * 会员与角色关联函数
+   * 机构与角色关联函数
    *
    * @return [关联对象]
    */
@@ -147,17 +166,17 @@ class Organization extends Common
    * @author zhangxiaofei [<1326336909@qq.com>]
    * @dateTime 2021-06-08
    * ------------------------------------------
-   * 会员与档案关联函数
+   * 机构与档案关联函数
    * ------------------------------------------
    *
-   * 会员与档案关联函数
+   * 机构与档案关联函数
    *
    * @return [关联对象]
    */
   public function archive()
   {
     return $this->hasOne(
-      'App\Models\Api\Module\Member\Archive',
+      'App\Models\Api\Module\Organization\Archive',
       'member_id',
       'id'
     );
@@ -168,18 +187,123 @@ class Organization extends Common
    * @author zhangxiaofei [<1326336909@qq.com>]
    * @dateTime 2021-06-08
    * ------------------------------------------
-   * 会员与资产关联表
+   * 机构与资产关联表
    * ------------------------------------------
    *
-   * 会员与资产关联表
+   * 机构与资产关联表
    *
    * @return [关联对象]
    */
   public function asset()
   {
     return $this->hasOne(
-      'App\Models\Api\Module\Member\Asset',
+      'App\Models\Api\Module\Organization\Asset',
       'member_id',
+      'id'
+    );
+  }
+
+
+  /**
+   * @author zhangxiaofei [<1326336909@qq.com>]
+   * @dateTime 2021-06-08
+   * ------------------------------------------
+   * 机构与资源关联函数
+   * ------------------------------------------
+   *
+   * 机构与资源关联函数
+   *
+   * @return [关联对象]
+   */
+  public function resource()
+  {
+    return $this->hasOne(
+      'App\Models\Api\Module\Organization\Resource',
+      'member_id',
+      'id'
+    );
+  }
+
+
+  /**
+   * @author zhangxiaofei [<1326336909@qq.com>]
+   * @dateTime 2021-12-08
+   * ------------------------------------------
+   * 机构与收益关联函数
+   * ------------------------------------------
+   *
+   * 机构与收益关联函数
+   *
+   * @return [关联对象]
+   */
+  public function obtain()
+  {
+    return $this->hasMany(
+      'App\Models\Api\Module\Organization\Obtain',
+      'member_id',
+      'id'
+    );
+  }
+
+
+  /**
+   * @author zhangxiaofei [<1326336909@qq.com>]
+   * @dateTime 2021-09-24
+   * ------------------------------------------
+   * 一级代理商与机构打印机关联表
+   * ------------------------------------------
+   *
+   * 一级代理商与机构打印机关联表
+   *
+   * @return [关联对象]
+   */
+  public function first()
+  {
+    return $this->hasMany(
+      'App\Models\Api\Module\Printer',
+      'first_level_agent_id',
+      'id'
+    );
+  }
+
+
+  /**
+   * @author zhangxiaofei [<1326336909@qq.com>]
+   * @dateTime 2021-09-24
+   * ------------------------------------------
+   * 二级代理商与机构打印机关联表
+   * ------------------------------------------
+   *
+   * 二级代理商与机构打印机关联表
+   *
+   * @return [关联对象]
+   */
+  public function second()
+  {
+    return $this->hasMany(
+      'App\Models\Api\Module\Printer',
+      'second_level_agent_id',
+      'id'
+    );
+  }
+
+
+  /**
+   * @author zhangxiaofei [<1326336909@qq.com>]
+   * @dateTime 2021-09-24
+   * ------------------------------------------
+   * 店长与机构打印机关联表
+   * ------------------------------------------
+   *
+   * 店长与机构打印机关联表
+   *
+   * @return [关联对象]
+   */
+  public function printer()
+  {
+    return $this->hasMany(
+      'App\Models\Api\Module\Printer',
+      'manager_id',
       'id'
     );
   }

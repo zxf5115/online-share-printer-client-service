@@ -1,21 +1,20 @@
 <?php
 namespace App\Models\Api\Module;
 
-use App\Models\Common\Module\Printer as Common;
+use App\Models\Common\Module\Outbound as Common;
 
 /**
  * @author zhangxiaofei [<1326336909@qq.com>]
- * @dateTime 2021-09-04
+ * @dateTime 2021-09-17
  *
- * 打印机模型类
+ * 出库单模型类
  */
-class Printer extends Common
+class Outbound extends Common
 {
   // 隐藏的属性
   public $hidden = [
     'organization_id',
-    'status',
-    'create_time',
+    'active',
     'update_time'
   ];
 
@@ -24,41 +23,20 @@ class Printer extends Common
 
   /**
    * @author zhangxiaofei [<1326336909@qq.com>]
-   * @dateTime 2021-09-04
+   * @dateTime 2021-09-13
    * ------------------------------------------
-   * 打印机与打印机日志关联函数
+   * 出库与出库详情关联函数
    * ------------------------------------------
    *
-   * 打印机与打印机日志关联函数
+   * 出库与出库详情关联函数
    *
    * @return [关联对象]
    */
-  public function log()
+  public function detail()
   {
     return $this->hasMany(
-      'App\Models\Api\Module\Printer\Log',
-      'printer_id',
-      'id',
-    );
-  }
-
-
-  /**
-   * @author zhangxiaofei [<1326336909@qq.com>]
-   * @dateTime 2021-09-04
-   * ------------------------------------------
-   * 打印机与一级代理商关联函数
-   * ------------------------------------------
-   *
-   * 打印机与一级代理商关联函数
-   *
-   * @return [关联对象]
-   */
-  public function first()
-  {
-    return $this->belongsTo(
-      'App\Models\Api\Module\Organization',
-      'first_level_agent_id',
+      'App\Models\Api\Module\Outbound\Detail',
+      'outbound_id',
       'id'
     );
   }
@@ -66,20 +44,20 @@ class Printer extends Common
 
   /**
    * @author zhangxiaofei [<1326336909@qq.com>]
-   * @dateTime 2021-09-04
+   * @dateTime 2021-09-13
    * ------------------------------------------
-   * 打印机与二级代理商关联函数
+   * 出库与出库资源关联函数
    * ------------------------------------------
    *
-   * 打印机与二级代理商关联函数
+   * 出库与出库资源关联函数
    *
    * @return [关联对象]
    */
-  public function second()
+  public function resource()
   {
-    return $this->belongsTo(
-      'App\Models\Api\Module\Organization',
-      'second_level_agent_id',
+    return $this->hasOne(
+      'App\Models\Api\Module\Outbound\Resource',
+      'outbound_id',
       'id'
     );
   }
@@ -87,20 +65,41 @@ class Printer extends Common
 
   /**
    * @author zhangxiaofei [<1326336909@qq.com>]
-   * @dateTime 2021-09-04
+   * @dateTime 2021-11-12
    * ------------------------------------------
-   * 打印机与店长关联函数
+   * 出库与出库物流关联函数
    * ------------------------------------------
    *
-   * 打印机与店长关联函数
+   * 出库与出库物流关联函数
    *
    * @return [关联对象]
    */
-  public function manager()
+  public function logistics()
+  {
+    return $this->hasOne(
+      'App\Models\Api\Module\Outbound\Logistics',
+      'outbound_id',
+      'id'
+    );
+  }
+
+
+  /**
+   * @author zhangxiaofei [<1326336909@qq.com>]
+   * @dateTime 2021-09-13
+   * ------------------------------------------
+   * 出库与代理商关联表
+   * ------------------------------------------
+   *
+   * 出库与代理商关联表
+   *
+   * @return [关联对象]
+   */
+  public function member()
   {
     return $this->belongsTo(
       'App\Models\Api\Module\Organization',
-      'manager_id',
+      'member_id',
       'id'
     );
   }

@@ -6,7 +6,7 @@ use App\Models\Common\Module\Repair as Common;
 
 /**
  * @author zhangxiaofei [<1326336909@qq.com>]
- * @dateTime 2021-09-13
+ * @dateTime 2021-11-25
  *
  * 报修模型类
  */
@@ -52,6 +52,27 @@ class Repair extends Common
     return $this->belongsTo(
       'App\Models\Api\Module\Member',
       'member_id',
+      'id'
+    );
+  }
+
+
+  /**
+   * @author zhangxiaofei [<1326336909@qq.com>]
+   * @dateTime 2021-09-13
+   * ------------------------------------------
+   * 报修与打印机关联表
+   * ------------------------------------------
+   *
+   * 报修与打印机关联表
+   *
+   * @return [关联对象]
+   */
+  public function printer()
+  {
+    return $this->belongsTo(
+      'App\Models\Api\Module\Printer',
+      'printer_id',
       'id'
     );
   }

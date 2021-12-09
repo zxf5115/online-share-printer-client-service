@@ -14,6 +14,7 @@ class PrinterEnum extends BaseEnum
   // 机器状态
   const ONLINE  = 1;
   const OFFLINE = 2;
+  const FAULT   = 3;
 
   // 阅读状态
   public static $status = [
@@ -25,6 +26,11 @@ class PrinterEnum extends BaseEnum
     self::OFFLINE => [
       'value' => self::OFFLINE,
       'text' => '离线'
+    ],
+
+    self::FAULT => [
+      'value' => self::FAULT,
+      'text' => '故障'
     ]
   ];
 
@@ -32,12 +38,12 @@ class PrinterEnum extends BaseEnum
   public static $switch = [
     self::ONLINE => [
       'value' => self::ONLINE,
-      'text' => '已分配'
+      'text' => '已绑定'
     ],
 
     self::OFFLINE => [
       'value' => self::OFFLINE,
-      'text' => '未分配'
+      'text' => '未绑定'
     ]
   ];
 
@@ -53,7 +59,7 @@ class PrinterEnum extends BaseEnum
    * @param int $code 信息代码
    * @return 信息内容
    */
-  public static function getStatus($code)
+  public static function getActivateStatus($code)
   {
     return self::$status[$code] ?: self::$status[self::ONLINE];
   }
@@ -71,8 +77,8 @@ class PrinterEnum extends BaseEnum
    * @param int $code 状态代码
    * @return 状态信息
    */
-  public static function getAllotStatus($code)
+  public static function getBindStatus($code)
   {
-    return self::$switch[$code] ?: self::$switch[self::OPEN];
+    return self::$switch[$code] ?: self::$switch[self::OFFLINE];
   }
 }

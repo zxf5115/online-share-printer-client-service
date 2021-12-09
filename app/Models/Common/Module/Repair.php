@@ -5,7 +5,7 @@ use App\Models\Base;
 
 /**
  * @author zhangxiaofei [<1326336909@qq.com>]
- * @dateTime 2021-09-13
+ * @dateTime 2021-11-25
  *
  * 报修模型类
  */
@@ -48,6 +48,7 @@ class Repair extends Base
     );
   }
 
+
   /**
    * @author zhangxiaofei [<1326336909@qq.com>]
    * @dateTime 2021-09-13
@@ -62,8 +63,29 @@ class Repair extends Base
   public function member()
   {
     return $this->belongsTo(
-      'App\Models\Common\Module\Member',
+      'App\Models\Common\Module\Organization',
       'member_id',
+      'id'
+    );
+  }
+
+
+  /**
+   * @author zhangxiaofei [<1326336909@qq.com>]
+   * @dateTime 2021-09-13
+   * ------------------------------------------
+   * 报修与打印机关联表
+   * ------------------------------------------
+   *
+   * 报修与打印机关联表
+   *
+   * @return [关联对象]
+   */
+  public function printer()
+  {
+    return $this->belongsTo(
+      'App\Models\Common\Module\Printer',
+      'printer_id',
       'id'
     );
   }
