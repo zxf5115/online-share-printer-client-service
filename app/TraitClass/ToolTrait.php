@@ -9,35 +9,24 @@ namespace App\TraitClass;
  */
 trait ToolTrait
 {
-  protected static $complete_name = [];
-
-
 
   /**
    * @author zhangxiaofei [<1326336909@qq.com>]
-   * @dateTime 2020-10-22
+   * @dateTime 2021-12-16
    * ------------------------------------------
-   * 获取课程单元目录信息
+   * 合成订单编号
    * ------------------------------------------
    *
-   * 获取课程单元目录信息
+   * 合成订单编号
    *
-   * @param [type] $data [description]
+   * @param string $prefix 订单前缀
    * @return [type]
    */
-  public static function getUnitDirectory($data, &$response)
+  public static function getOrderNo($prefix = 'SO')
   {
-    foreach($data as $k => $item)
-    {
-      $response[$k] = $item->title;
+    $rand = str_pad(rand(1, 999999), 6, 0, STR_PAD_LEFT);
 
-      if(empty($item->children))
-      {
-        continue;
-      }
-
-      self::getUnitDirectory($item, $response[$k]);
-    }
+    return $prefix . date('YmdHis') . $rand;
   }
 
 

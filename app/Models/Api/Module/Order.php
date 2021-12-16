@@ -129,6 +129,27 @@ class Order extends Common
 
   /**
    * @author zhangxiaofei [<1326336909@qq.com>]
+   * @dateTime 2021-12-18
+   * ------------------------------------------
+   * 订单与订单资源关联函数
+   * ------------------------------------------
+   *
+   * 订单与订单资源关联函数
+   *
+   * @return [关联对象]
+   */
+  public function resource()
+  {
+    return $this->hasOne(
+      'App\Models\Api\Module\Order\Resource',
+      'order_id',
+      'id',
+    );
+  }
+
+
+  /**
+   * @author zhangxiaofei [<1326336909@qq.com>]
    * @dateTime 2021-11-08
    * ------------------------------------------
    * 订单与订单日志关联函数

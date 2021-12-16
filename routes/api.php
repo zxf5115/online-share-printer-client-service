@@ -113,19 +113,6 @@ $api->version('v1', [
         // 会员关联内容路由
         $api->group(['namespace' => 'Member'], function ($api) {
 
-          // 会员资产路由
-          $api->group(['prefix'  => 'asset'], function ($api) {
-            $api->get('data', 'AssetController@data');
-          });
-
-          // 会员资产明细路由
-          $api->group(['prefix'  => 'money'], function ($api) {
-            $api->get('list', 'MoneyController@list');
-            $api->get('income', 'MoneyController@income');
-            $api->get('expend', 'MoneyController@expend');
-            $api->post('handle', 'MoneyController@handle');
-          });
-
           // 会员消息路由
           $api->group(['prefix'  => 'notice'], function ($api) {
             $api->get('list', 'NoticeController@list');
@@ -144,6 +131,8 @@ $api->version('v1', [
           $api->group(['prefix'  => 'order'], function ($api) {
             $api->get('list', 'OrderController@list');
             $api->get('view/{id}', 'OrderController@view');
+            $api->post('first_step', 'OrderController@first_step');
+            $api->post('second_step', 'OrderController@second_step');
             $api->post('handle', 'OrderController@handle');
             $api->post('pay', 'OrderController@pay');
             $api->post('delete', 'OrderController@delete');

@@ -2,18 +2,17 @@
 namespace App\Models\Common\Module\Order;
 
 use App\Models\Base;
-use App\Enum\Module\Order\LogEnum;
 
 /**
  * @author zhangxiaofei [<1326336909@qq.com>]
- * @dateTime 2021-07-08
+ * @dateTime 2021-12-18
  *
- * 订单日志模型类
+ * 订单资源模型类
  */
-class Log extends Base
+class Resource extends Base
 {
   // 表名
-  public $table = 'module_order_log';
+  public $table = 'module_order_resource';
 
   // 隐藏的属性
   public $hidden = [
@@ -31,30 +30,12 @@ class Log extends Base
   public $appends = [];
 
 
-  /**
-   * @author zhangxiaofei [<1326336909@qq.com>]
-   * @dateTime 2021-06-29
-   * ------------------------------------------
-   * 打印类型封装
-   * ------------------------------------------
-   *
-   * 打印类型封装
-   *
-   * @param [type] $value [description]
-   * @return [type]
-   */
-  public function getTypeAttribute($value)
-  {
-    return LogEnum::getTypeStatus($value);
-  }
-
-
   // 关联函数 ------------------------------------------------------
 
 
   /**
    * @author zhangxiaofei [<1326336909@qq.com>]
-   * @dateTime 2021-07-07
+   * @dateTime 2021-12-18
    * ------------------------------------------
    * 订单日志与订单关联函数
    * ------------------------------------------
