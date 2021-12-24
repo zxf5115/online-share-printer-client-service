@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api\System;
 use Illuminate\Http\Request;
 
 use zxf5115\Upload\File;
+use App\TraitClass\ToolTrait;
 use App\Http\Controllers\Api\BaseController;
 use App\Http\Constant\Common\System\Code;
+
 
 /**
  * @author zhangxiaofei [<1326336909@qq.com>]
@@ -15,9 +17,11 @@ use App\Http\Constant\Common\System\Code;
  */
 class FileController extends BaseController
 {
+  use ToolTrait;
+
   /**
    * @api {post} /api/file/file 01. 上传文件
-   * @apiDescription 通过base64的内容进行文件上传
+   * @apiDescription 通过文件内容进行文件上传
    * @apiGroup 03. 上传模块
    * @apiPermission jwt
    * @apiHeader {String} Authorization 身份令牌
@@ -29,7 +33,9 @@ class FileController extends BaseController
    * @apiParam {string} file 文件数据
    * @apiParam {string} [category] 文件分类 excel word pdf video audio ...
    *
-   * @apiSuccess (字段说明) {string} data 文件地址
+   * @apiSuccess (字段说明) {string} url 文件地址
+   * @apiSuccess (字段说明) {string} filename 文件名称
+   * @apiSuccess (字段说明) {string} page 文件页数
    *
    * @apiSampleRequest /api/file/file
    * @apiVersion 1.0.0
@@ -40,13 +46,33 @@ class FileController extends BaseController
     {
       $category = $request->category ?? 'file';
 
-      $response = File::file_base64($request->file, $category);
+      $file = request()->file('file');
+
+      if(!$file->isValid())
+      {
+        return [
+          'status' => Code::FILE_UPLOAD_FAILURE_RETRY,
+          'message' => Code::$message[Code::FILE_UPLOAD_FAILURE_RETRY]
+        ];
+      }
+
+      $filename = $file->getClientOriginalName();
+
+      $url = File::file_base64($request->file, $category);
 
       // 如果返回错误代码
-      if(false === strpos($response, 'http'))
+      if(false === strpos($url, 'http'))
       {
-        return self::message($response);
+        return self::message($url);
       }
+
+      $total = self::getPageTotal($url);
+
+      $response = [
+        'url' => $url,
+        'filename' => $filename,
+        'page' => $total
+      ];
 
       return self::success($response);
     }
