@@ -23,7 +23,16 @@ class LoginController extends BaseController
    * @api {post} /api/weixin_login 01. 微信登录
    * @apiDescription 通过第三方软件-微信，进行登录
    * @apiGroup 01. 登录模块
+   *
    * @apiParam {string} open_id 微信OpenID
+   * @apiParam {string} avatar 会员头像
+   * @apiParam {string} nickname 会员姓名
+   * @apiParam {string} [sex] 会员性别
+   * @apiParam {string} [age] 会员性别
+   * @apiParam {string} [province_id] 省
+   * @apiParam {string} [city_id] 市
+   * @apiParam {string} [region_id] 县
+   * @apiParam {string} [address] 详细地址
    *
    * @apiSuccess (字段说明|令牌) {String} token 身份令牌
    * @apiSuccess (字段说明|用户) {Number} id 会员编号
@@ -67,7 +76,7 @@ class LoginController extends BaseController
         // 用户不存在
         if(is_null($response))
         {
-          return self::error(Code::MEMBER_EMPTY);
+          $response = $this->_model::register($request);
         }
 
         // 用户已禁用
