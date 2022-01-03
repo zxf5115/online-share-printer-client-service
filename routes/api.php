@@ -63,6 +63,7 @@ $api->version('v1', [
         // 支付回调路由
         $api->group(['prefix' => 'notify'], function ($api) {
           $api->any('wechat', 'NotifyController@wechat');
+          $api->any('test', 'NotifyController@test');
         });
       });
 

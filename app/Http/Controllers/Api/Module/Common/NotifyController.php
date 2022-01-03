@@ -93,4 +93,29 @@ class NotifyController extends BaseController
       Log::info('支付失败====' . $content);
     }
   }
+
+
+  /**
+   * @api {post} /api/common/notify/wechat 14. 微信支付回调
+   * @apiDescription 获取微信支付回调
+   * @apiGroup 02. 公共模块
+   *
+   * @apiSampleRequest /api/common/notify/wechat
+   * @apiVersion 1.0.0
+   */
+  public function wechat(Request $request)
+  {
+    try
+    {
+      // 打印队列Socket消耗
+      $key = RedisKey::SOCKET_PRINT_QUEUE;
+
+      // 将订单自增编号插入打印队列
+      Redis::rpush($key, $request->order_id);
+    }
+    catch(\Exception $e)
+    {
+      record($e);
+    }
+  }
 }
