@@ -140,71 +140,45 @@ class File extends Base
       ];
     }
 
-    $category_id = Config::isLocalStorage();
+    // 过滤所有的.符号
+    $path = str_replace('.', '', $path);
 
-    if($category_id)
+      // 先去除两边空格
+    $path = trim($path, '/');
+
+      // 获取文件后缀
+    $extension = strtolower($file->getClientOriginalExtension());
+
+    // 组合新的文件名
+    $newName = md5(time()).'.'.$extension;
+
+    // 获取上传的文件名
+    $oldName = $file->getClientOriginalName();
+
+    if (!empty($allowExtension) && !in_array($extension, $allowExtension))
     {
-      $data = Config::getConfigData($category_id);
+      return [
+        'status' => Code::FILE_UPLOAD_EXTENSION_ERROR,
+        'message' => Code::$message[Code::FILE_UPLOAD_EXTENSION_ERROR]
+      ];
+    }
 
-      $access_key    = $data[2]->value;
-      $secret_access = $data[3]->value;
-      $endpoint      = $data[5]->value;
+    $dir = $path . DIRECTORY_SEPARATOR . date('Y-m-d');
 
-      $this->OssClient = new \OSS\OssClient($access_key, $secret_access, $endpoint);
+    Storage::disk($disk)->makeDirectory($dir);
 
-      $returnPath = '/Uploads';
-      $filepath = public_path($returnPath);
+    $filename = $dir . DIRECTORY_SEPARATOR . $newName;
 
-
-      $this->data['oss_real_path'] = $this->dir.date('Y_m_d');
-      $this->data['real_path'] = $filepath;
-
-      // 判断是否又自定义路径
-      if(isset($this->data['filepath']))
-      {
-        $this->data['real_path'] = $filepath;
-        $this->data['oss_real_path'] = $this->dir.$data['filepath'].date('Y_m_d');
-      }
+    if(Storage::disk($disk)->put($filename, file_get_contents($file)))
+    {
+      return [
+        'url' => Storage::url($filename),
+        'filename' => $oldName
+      ];
     }
     else
     {
-      // 过滤所有的.符号
-      $path = str_replace('.', '', $path);
-
-        // 先去除两边空格
-      $path = trim($path, '/');
-
-        // 获取文件后缀
-      $extension = strtolower($file->getClientOriginalExtension());
-
-        // 组合新的文件名
-      $newName = md5(time()).'.'.$extension;
-
-        // 获取上传的文件名
-      $oldName = $file->getClientOriginalName();
-
-      if (!empty($allowExtension) && !in_array($extension, $allowExtension))
-      {
-        return [
-          'status' => Code::FILE_UPLOAD_EXTENSION_ERROR,
-          'message' => Code::$message[Code::FILE_UPLOAD_EXTENSION_ERROR]
-        ];
-      }
-
-      $dir = $path . DIRECTORY_SEPARATOR . date('Y-m-d');
-
-      Storage::disk($disk)->makeDirectory($dir);
-
-      $filename = $dir . DIRECTORY_SEPARATOR . $newName;
-
-      if(Storage::disk($disk)->put($filename, file_get_contents($file)))
-      {
-        return  Storage::url($filename);
-      }
-      else
-      {
-        return false;
-      }
+      return false;
     }
   }
 

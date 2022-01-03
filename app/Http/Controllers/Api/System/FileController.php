@@ -5,8 +5,9 @@ use Illuminate\Http\Request;
 
 use zxf5115\Upload\File;
 use App\TraitClass\ToolTrait;
-use App\Http\Controllers\Api\BaseController;
 use App\Http\Constant\Common\System\Code;
+use App\Http\Controllers\Api\BaseController;
+use App\Models\Common\System\File as LocalFile;
 
 
 /**
@@ -44,35 +45,16 @@ class FileController extends BaseController
   {
     try
     {
-      $category = $request->category ?? 'file';
+      $result = LocalFile::file($request->file);
 
-      $file = request()->file('file');
-
-      if(!$file->isValid())
+      if(empty($result['url']))
       {
-        return [
-          'status' => Code::FILE_UPLOAD_FAILURE_RETRY,
-          'message' => Code::$message[Code::FILE_UPLOAD_FAILURE_RETRY]
-        ];
+        return false;
       }
 
-      $filename = $file->getClientOriginalName();
+      $total = self::getPageTotal($result['url']);
 
-      $url = File::file_base64($request->file, $category);
-
-      // 如果返回错误代码
-      if(false === strpos($url, 'http'))
-      {
-        return self::message($url);
-      }
-
-      $total = self::getPageTotal($url);
-
-      $response = [
-        'url' => $url,
-        'filename' => $filename,
-        'page' => $total
-      ];
+      $response = array_merge($result, ['total' => $total]);
 
       return self::success($response);
     }
