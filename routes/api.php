@@ -64,6 +64,7 @@ $api->version('v1', [
         $api->group(['prefix' => 'notify'], function ($api) {
           $api->any('wechat', 'NotifyController@wechat');
           $api->any('test', 'NotifyController@test');
+          $api->any('test2', 'NotifyController@test2');
         });
       });
 

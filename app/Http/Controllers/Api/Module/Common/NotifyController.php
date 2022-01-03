@@ -118,4 +118,31 @@ class NotifyController extends BaseController
       record($e);
     }
   }
+
+
+  /**
+   * @api {post} /api/common/notify/test2 14. 测试[TODO]
+   * @apiDescription 获取微信支付回调
+   * @apiGroup 02. 公共模块
+   *
+   * @apiSampleRequest /api/common/notify/test2
+   * @apiVersion 1.0.0
+   */
+  public function test2(Request $request)
+  {
+    try
+    {
+      // 打印队列Socket消耗
+      $key = RedisKey::SOCKET_PRINT_QUEUE;
+
+      // 将订单自增编号插入打印队列
+      $response = Redis::llen($key);
+
+      return self::success($response);
+    }
+    catch(\Exception $e)
+    {
+      record($e);
+    }
+  }
 }
