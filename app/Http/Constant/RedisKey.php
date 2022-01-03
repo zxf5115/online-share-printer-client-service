@@ -11,29 +11,30 @@ namespace App\Http\Constant;
 class RedisKey
 {
   // 平台核心数据
-  const KERNEL = 'currency_kernel';
+  const KERNEL = 'printer_kernel';
 
   // 系统协议
-  const AGREEMENT = 'currency_agreement';
+  const AGREEMENT = 'printer_agreement';
 
   // 平台菜单键名
-  const PLATFORM_MENU = 'currency_platform_menus';
+  const PLATFORM_MENU = 'printer_platform_menus';
 
 
   // 短信登录验证码键名
-  const SMS_LOGIN_CODE = 'currency_sms_login_code';
+  const SMS_LOGIN_CODE = 'printer_sms_login_code';
 
   // 短信注册验证码键名
-  const SMS_REGISTERR_CODE = 'currency_sms_registere_code';
+  const SMS_REGISTERR_CODE = 'printer_sms_registere_code';
 
   // 短信绑定验证码键名
-  const SMS_BIND_CODE = 'currency_sms_bind_code';
+  const SMS_BIND_CODE = 'printer_sms_bind_code';
 
   // 短信重置验证码键名
-  const SMS_RESET_CODE = 'currency_sms_reset_code';
+  const SMS_RESET_CODE = 'printer_sms_reset_code';
 
   // 短信修改验证码键名
-  const SMS_CHANGE_CODE = 'currency_sms_change_code';
+  const SMS_CHANGE_CODE = 'printer_sms_change_code';
 
-
+  // Socket 打印任务队列
+  const SOCKET_PRINT_QUEUE = 'socket_print_queue';
 }

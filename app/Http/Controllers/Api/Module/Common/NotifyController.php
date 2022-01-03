@@ -3,20 +3,20 @@ namespace App\Http\Controllers\Api\Module\Common;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 
 use Yansongda\Pay\Log;
 use Yansongda\Pay\Pay;
 use App\Http\Constant\Code;
+use App\Http\Constant\RedisKey;
+use App\Models\Common\Module\Order;
 use App\Http\Controllers\Api\BaseController;
 use Yansongda\Pay\Exceptions\GatewayException;
-
-use App\Events\Api\Member\AssetEvent;
-use App\Models\Common\Module\Member\Money;
 
 
 /**
  * @author zhangxiaofei [<1326336909@qq.com>]
- * @dateTime 2021-02-19
+ * @dateTime 2022-01-01
  *
  * 回调控制器类
  */
@@ -52,24 +52,31 @@ class NotifyController extends BaseController
       Log::info('订单编号====' . $order_no);
 
       $where = [
-        'id'     => $order_no,
-        'status' => 1
+        'order_no' => $order_no,
+        'status'   => 1
       ];
 
-      $model = Money::getRow($where);
+      $model = Order::getRow($where);
 
       if(empty($model->id))
       {
+        Log::info('订单未找到');
+
         return false;
       }
 
       $model->confirm_status = 1;
       $model->save();
 
-      // 充值
-      event(new AssetEvent($model->member_id, $model->money));
-
       Log::info('支付成功');
+
+      // 打印队列Socket消耗
+      $key = RedisKey::SOCKET_PRINT_QUEUE;
+
+      // $redis = Redis::connection('session');
+
+      // 将订单自增编号插入打印队列
+      Redis::rpush($key, $model->id);
 
       DB::commit();
 
