@@ -96,14 +96,14 @@ class NotifyController extends BaseController
 
 
   /**
-   * @api {post} /api/common/notify/wechat 14. 微信支付回调
+   * @api {post} /api/common/notify/test 14. 测试[TODO]
    * @apiDescription 获取微信支付回调
    * @apiGroup 02. 公共模块
    *
-   * @apiSampleRequest /api/common/notify/wechat
+   * @apiSampleRequest /api/common/notify/test
    * @apiVersion 1.0.0
    */
-  public function wechat(Request $request)
+  public function test(Request $request)
   {
     try
     {
