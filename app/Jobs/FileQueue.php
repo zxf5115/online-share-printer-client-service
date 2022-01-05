@@ -89,9 +89,18 @@ class FileQueue implements ShouldQueue
     }
     else if('png' == $extension || 'jpg' == $extension || 'jpeg' == $extension)
     {
-      $pdf = substr($url, 0, strpos($url, '.')) . '.pdf';
+      $response = substr($url, 0, strrpos($url, '.')) . '.pdf';
+
+      $url = str_replace('storage', 'storage/app/public', $url);
+
+      $url = base_path() . $url;
+
+      $pdf = substr($url, 0, strrpos($url, '.')) . '.pdf';
 
       $exec = 'convert ' . $url . ' ' . $pdf;
+
+      // 记录转换命令
+      Log::info($exec);
 
       @exec($exec, $result, $status);
 
@@ -102,7 +111,7 @@ class FileQueue implements ShouldQueue
         return false;
       }
 
-      return $pdf;
+      return $response;
     }
     else
     {
