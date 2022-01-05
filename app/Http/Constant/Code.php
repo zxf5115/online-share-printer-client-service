@@ -63,6 +63,7 @@ class Code
 
   // 微信错误
   const WX_CODE_EXIST = 7001;
+  const WX_REQUIRE_ERROR = 7002;
 
   // 代码错误
   const OLD_PASSWORD_ERROR = 8001;
@@ -217,6 +218,7 @@ class Code
     self::FILE_EXIST                  => '文件不存在',
 
     self::WX_CODE_EXIST => 'Code丢失',
+    self::WX_REQUIRE_ERROR => '微信数据错误',
 
     self::OLD_PASSWORD_ERROR => '当前登录密码不正确',
 

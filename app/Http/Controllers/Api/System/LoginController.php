@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 use App\Http\Constant\Code;
+use App\Models\Api\Module\Member;
 use App\Http\Controllers\Api\BaseController;
 
 
@@ -24,7 +25,7 @@ class LoginController extends BaseController
    * @apiDescription 通过第三方软件-微信，进行登录
    * @apiGroup 01. 登录模块
    *
-   * @apiParam {string} open_id 微信OpenID
+   * @apiParam {string} code 微信code
    * @apiParam {string} avatar 会员头像
    * @apiParam {string} nickname 会员姓名
    * @apiParam {string} [sex] 会员性别
@@ -51,11 +52,11 @@ class LoginController extends BaseController
   public function weixin_login(Request $request)
   {
     $messages = [
-      'open_id.required' => '请输入微信编号',
+      'code.required' => '请输入微信编号',
     ];
 
     $rule = [
-      'open_id' => 'required',
+      'code' => 'required',
     ];
 
     // 验证用户数据内容是否正确
@@ -69,9 +70,20 @@ class LoginController extends BaseController
     {
       try
       {
-        $condition = self::getSimpleWhereData($request->open_id, 'open_id');
+        $data = Member::getUserOpenId($request->code);
 
-        $response = $this->_model::getRow($condition);
+        if(empty($data) || empty($data['openid']))
+        {
+          return self::error(Code::WX_REQUIRE_ERROR);
+        }
+
+        $condition = self::getSimpleWhereData();
+
+        $where = ['open_id' => $data['openid']];
+
+        $where = array_merge($condition, $where);
+
+        $response = $this->_model::getRow($where);
 
         // 用户不存在
         if(is_null($response))

@@ -3,16 +3,16 @@ namespace App\Http\Controllers\Api\System;
 
 use Illuminate\Http\Request;
 
+use App\Jobs\FileQueue;
 use zxf5115\Upload\File;
+use App\Http\Constant\Code;
 use App\TraitClass\ToolTrait;
-use App\Http\Constant\Common\System\Code;
 use App\Http\Controllers\Api\BaseController;
-use App\Models\Common\System\File as LocalFile;
 
 
 /**
  * @author zhangxiaofei [<1326336909@qq.com>]
- * @dateTime 2021-04-20
+ * @dateTime 2021-01-04
  *
  * 文件上传接口控制器类
  */
@@ -45,16 +45,34 @@ class FileController extends BaseController
   {
     try
     {
-      $result = LocalFile::file($request->file);
+      $category = $request->category ?? 'picture';
 
-      if(empty($result['url']))
+      $allow = ['docx', 'doc', 'xls', 'xlsx', 'pdf', 'txt', 'png', 'jpg', 'jpeg'];
+
+      $url = File::file('file', $category, $allow);
+
+      // 如果返回错误代码
+      if(false === strpos($url, 'http'))
       {
-        return false;
+        return self::message($url);
       }
 
-      $total = self::getPageTotal($result['url']);
+      $file = request()->file('file');
 
-      $response = array_merge($result, ['total' => $total]);
+      $data = json_encode($file);
+
+      // 将图片添加到文件队列
+      FileQueue::dispatch($data);
+
+      $filename = $file->getClientOriginalName();
+
+      $total = self::getPageTotal($url);
+
+      $response = [
+        'url' => $url,
+        'filename' => $filename,
+        'page' => $total
+      ];
 
       return self::success($response);
     }
@@ -70,7 +88,7 @@ class FileController extends BaseController
 
   /**
    * @api {post} /api/file/picture 02. 上传图片
-   * @apiDescription 通过base64的内容进行图片上传
+   * @apiDescription 图片上传
    * @apiGroup 03. 上传模块
    * @apiPermission jwt
    * @apiHeader {String} Authorization 身份令牌
@@ -93,7 +111,7 @@ class FileController extends BaseController
     {
       $category = $request->category ?? 'picture';
 
-      $response = File::picture_base64($request->file, $category);
+      $response = File::picture($request->file, $category);
 
       // 如果返回错误代码
       if(false === strpos($response, 'http'))

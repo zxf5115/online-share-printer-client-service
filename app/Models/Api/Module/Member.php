@@ -43,15 +43,15 @@ class Member extends Common
    *
    * @return [type]
    */
-  public static function register($param, $value)
+  public static function register($request, $open_id)
   {
     DB::beginTransaction();
 
     try
     {
-      $model = self::firstOrNew(['open_id' => $request->open_id, 'status' => 1]);
+      $model = self::firstOrNew(['open_id' => $open_id, 'status' => 1]);
 
-      $model->open_id  = $request->open_id ?? '';
+      $model->open_id  = $open_id ?? '';
       $model->role_id  = 3;
       $model->avatar   = $request->avatar ?? '';
       $model->username = '';
@@ -83,9 +83,9 @@ class Member extends Common
         $model->asset()->create($data);
       }
 
-      return $model;
-
       DB::commit();
+
+      return $model;
     }
     catch(\Exception $e)
     {
@@ -98,6 +98,41 @@ class Member extends Common
   }
 
 
+  /**
+   * @author zhangxiaofei [<1326336909@qq.com>]
+   * @dateTime 2021-06-10
+   * ------------------------------------------
+   * 获取openid
+   * ------------------------------------------
+   *
+   * 获取openid
+   *
+   * @param string $code [description]
+   * @return [type]
+   */
+  public static function  getUserOpenId($code)
+  {
+    $param = [];
+
+    $param[] = 'appid=' . config('weixin.weixin_key');
+    $param[] = 'secret=' . config('weixin.weixin_secret');
+    $param[] = 'js_code=' . $code;
+    $param[] = 'grant_type=authorization_code';
+
+    $params = implode('&', $param);    //用&符号连起来
+
+    $url = config('weixin.weixin_openid_url') . '?' . $params;
+
+    //请求接口
+    $client = new \GuzzleHttp\Client([
+        'timeout' => 60
+    ]);
+
+    $res = $client->request('GET', $url);
+
+    //openid和session_key
+    return json_decode($res->getBody()->getContents(), true);
+  }
 
 
   // 关联函数 ------------------------------------------------------
