@@ -5,16 +5,13 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-
-use App\Models\Common\System\File;
 
 /**
  * 客户上传文件处理队列
  */
-class FileQueue implements SelfHandling, ShouldQueue
+class FileQueue implements ShouldQueue
 {
   use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -34,14 +31,20 @@ class FileQueue implements SelfHandling, ShouldQueue
   public $timeout = 120;
 
 
+  private $_url = null;
+
+  private $_extension = '';
+
+
   /**
    * Create a new job instance.
    *
    * @return void
    */
-  public function __construct($file)
+  public function __construct($url, $extension)
   {
-    $this->file = $file;
+    $this->_url = $url;
+    $this->_extension = $extension;
   }
 
   /**
@@ -53,10 +56,8 @@ class FileQueue implements SelfHandling, ShouldQueue
   {
     try
     {
-      $file = json_decode($this->file);
-
       // 文件转换为PDF
-      $url = $this->conversion($file);
+      $url = $this->conversion($this->_url, $this->_extension);
 
 
     }
@@ -77,16 +78,11 @@ class FileQueue implements SelfHandling, ShouldQueue
    * 将非PDF文件转换为PDF文件
    *
    * @param [type] $file 文件对象
+   * @param [type] $extension 文件后缀
    * @return [type]
    */
-  private function conversion($file)
+  private function conversion($url, $extension)
   {
-    // 获取文件后缀
-    $extension = $file->getClientOriginalExtension();
-
-    // 上传文件到本地
-    $url = $this->file($file);
-
     if('pdf' == $extension)
     {
       return $url;
@@ -154,58 +150,6 @@ class FileQueue implements SelfHandling, ShouldQueue
     {
       Log::error('file separate error');
 
-      return false;
-    }
-  }
-
-
-  /**
-   * @author zhangxiaofei [<1326336909@qq.com>]
-   * @dateTime 2022-01-04
-   * ------------------------------------------
-   * 上传文件
-   * ------------------------------------------
-   *
-   * 上传文件
-   *
-   * @param string $file 文件对象
-   * @param string $path 路径
-   * @return [type]
-   */
-  public static function file($file, $path = 'temporary')
-  {
-    if(!$file->isValid())
-    {
-      return [
-        'status' => Code::FILE_UPLOAD_FAILURE_RETRY,
-        'message' => Code::$message[Code::FILE_UPLOAD_FAILURE_RETRY]
-      ];
-    }
-
-    // 过滤所有的.符号
-    $path = str_replace('.', '', $path);
-
-      // 先去除两边空格
-    $path = trim($path, '/');
-
-      // 获取文件后缀
-    $extension = strtolower($file->getClientOriginalExtension());
-
-    // 组合新的文件名
-    $newName = md5(time()).'.'.$extension;
-
-    $dir = $path . DIRECTORY_SEPARATOR . date('Y-m-d');
-
-    Storage::disk('public')->makeDirectory($dir);
-
-    $filename = $dir . DIRECTORY_SEPARATOR . $newName;
-
-    if(Storage::disk('public')->put($filename, file_get_contents($file)))
-    {
-      return Storage::url($filename);
-    }
-    else
-    {
       return false;
     }
   }

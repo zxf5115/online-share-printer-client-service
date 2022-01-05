@@ -8,6 +8,7 @@ use zxf5115\Upload\File;
 use App\Http\Constant\Code;
 use App\TraitClass\ToolTrait;
 use App\Http\Controllers\Api\BaseController;
+use App\Models\Common\System\File as LocalFile;
 
 
 /**
@@ -59,12 +60,16 @@ class FileController extends BaseController
 
       $file = request()->file('file');
 
-      $data = json_encode($file);
+      $result = LocalFile::data($file);
+
+      // 获取文件名称
+      $filename = $file->getClientOriginalName();
+
+      // 获取文件后缀
+      $extension = $file->getClientOriginalExtension();
 
       // 将图片添加到文件队列
-      FileQueue::dispatch($data);
-
-      $filename = $file->getClientOriginalName();
+      FileQueue::dispatch($result, $extension);
 
       $total = self::getPageTotal($url);
 

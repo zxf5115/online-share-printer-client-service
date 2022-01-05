@@ -281,4 +281,56 @@ class File extends Base
       return false;
     }
   }
+
+
+  /**
+   * @author zhangxiaofei [<1326336909@qq.com>]
+   * @dateTime 2022-01-04
+   * ------------------------------------------
+   * 上传数据
+   * ------------------------------------------
+   *
+   * 上传数据
+   *
+   * @param string $file 文件对象
+   * @param string $path 路径
+   * @return [type]
+   */
+  public static function data($file, $path = 'temporary')
+  {
+    if(!$file->isValid())
+    {
+      return [
+        'status' => Code::FILE_UPLOAD_FAILURE_RETRY,
+        'message' => Code::$message[Code::FILE_UPLOAD_FAILURE_RETRY]
+      ];
+    }
+
+    // 过滤所有的.符号
+    $path = str_replace('.', '', $path);
+
+      // 先去除两边空格
+    $path = trim($path, '/');
+
+      // 获取文件后缀
+    $extension = strtolower($file->getClientOriginalExtension());
+
+    // 组合新的文件名
+    $newName = md5(time()).'.'.$extension;
+
+    $dir = $path . DIRECTORY_SEPARATOR . date('Y-m-d');
+
+    Storage::disk('public')->makeDirectory($dir);
+
+    $filename = $dir . DIRECTORY_SEPARATOR . $newName;
+
+    if(Storage::disk('public')->put($filename, file_get_contents($file)))
+    {
+      return Storage::url($filename);
+    }
+    else
+    {
+      return false;
+    }
+  }
 }
