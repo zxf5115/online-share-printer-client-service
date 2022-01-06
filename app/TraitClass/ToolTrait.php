@@ -107,6 +107,36 @@ trait ToolTrait
       // 返回页数
       return $max;
     }
+  }
 
+
+
+  public function total($url)
+  {
+    $url = str_replace('storage', 'storage/app/public', $url);
+
+    $url = base_path() . $url;
+
+    $exec = 'pdfinfo -rawdates  ' . $url;
+
+    // 记录转换命令
+    Log::info($exec);
+
+    exec($exec, $result, $status);
+
+    if(0 < $status)
+    {
+      Log::error('file conversion error');
+
+      return false;
+    }
+
+    if(preg_match("/Pages:\s*(.+)/i", $result, $matches) === 1)
+    {
+      $response = $matches[1];
+      break;
+    }
+
+    return $response;
   }
 }

@@ -179,7 +179,8 @@ class OrderController extends BaseController
    * @apiParam {String} printer_id 打印机自增编号
    * @apiParam {String} filename 打印文件名称
    * @apiParam {String} page_total 打印文件页数
-   * @apiParam {String} url 打印文件地址
+   * @apiParam {String} url 打印原始文件地址
+   * @apiParam {String} pdf_url 打印PDF文件地址
    *
    * @apiSampleRequest /api/member/order/first_step
    * @apiVersion 1.0.0
@@ -194,6 +195,7 @@ class OrderController extends BaseController
       'filename.required' => '请您输入打印文件名称',
       'page_total.required' => '请您输入打印文件页数',
       'url.required' => '请您上传打印文件',
+      'pdf_url.required' => '请您上传打印文件',
     ];
 
     $rule = [
@@ -204,6 +206,7 @@ class OrderController extends BaseController
       'filename' => 'required',
       'page_total' => 'required',
       'url' => 'required',
+      'pdf_url' => 'required',
     ];
 
     // 验证用户数据内容是否正确
@@ -237,7 +240,8 @@ class OrderController extends BaseController
         $model->save();
 
         $data = [
-          'url' => $request->url
+          'url' => $request->url,
+          'pdf_url' => $request->pdf_url
         ];
 
         $model->resource()->delete();

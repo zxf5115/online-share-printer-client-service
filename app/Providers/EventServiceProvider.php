@@ -51,6 +51,11 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\Api\Member\PayEvent' => [
             'App\Listeners\Api\Member\PayListeners',
         ],
+
+        // 订单
+        'App\Events\Api\Member\OrderEvent' => [
+            'App\Listeners\Api\Member\OrderListeners',
+        ],
     ];
 
     /**

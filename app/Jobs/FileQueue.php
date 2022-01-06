@@ -57,8 +57,10 @@ class FileQueue implements ShouldQueue
     try
     {
       // 文件转换为PDF
-      $url = $this->conversion($this->_url, $this->_extension);
+      $pdf = $this->conversion($this->_url, $this->_extension);
 
+      // 将PDF文件最大按照10页分割成多个小PDF
+      $this->separate($pdf, 10);
 
     }
     catch(\Exception $e)
@@ -89,8 +91,6 @@ class FileQueue implements ShouldQueue
     }
     else if('png' == $extension || 'jpg' == $extension || 'jpeg' == $extension)
     {
-      $response = substr($url, 0, strrpos($url, '.')) . '.pdf';
-
       $url = str_replace('storage', 'storage/app/public', $url);
 
       $url = base_path() . $url;
@@ -102,7 +102,7 @@ class FileQueue implements ShouldQueue
       // 记录转换命令
       Log::info($exec);
 
-      @exec($exec, $result, $status);
+      exec($exec, $result, $status);
 
       if(0 < $status)
       {
@@ -111,15 +111,24 @@ class FileQueue implements ShouldQueue
         return false;
       }
 
-      return $response;
+      return $pdf;
     }
     else
     {
-      $pdf = substr($url, 0, strpos($url, '.')) . '.pdf';
+      $url = str_replace('storage', 'storage/app/public', $url);
 
-      $exec = 'soffice --headless --convert-to pdf ' . $url . ' --outdir ./';
+      $url = base_path() . $url;
 
-      @exec($exec, $result, $status);
+      $directory = substr($url, 0, strrpos($url, '/'));
+
+      $pdf = substr($url, 0, strrpos($url, '.')) . '.pdf';
+
+      $exec = 'soffice --headless --convert-to pdf ' . $url . ' --outdir ' . $directory;
+
+      // 记录转换命令
+      Log::info($exec);
+
+      exec($exec, $result, $status);
 
       if(0 < $status)
       {
@@ -131,6 +140,7 @@ class FileQueue implements ShouldQueue
       return $pdf;
     }
   }
+
 
   /**
    * @author zhangxiaofei [<1326336909@qq.com>]
@@ -146,7 +156,7 @@ class FileQueue implements ShouldQueue
    * @param [type] $end 结束页数
    * @return [type]
    */
-  public function separate($file, $start, $end)
+  public function separate($file, $page)
   {
     $pdf = substr($url, 0, strpos($url, '.')) . '_' . $start . '_'. $end .'.pdf';
 
