@@ -181,7 +181,7 @@ class FileQueue implements ShouldQueue
 
       $end = bcadd($page, 10);
 
-      $file = substr($url, 0, strpos($url, '.')) . '_' . $start . '_'. $end .'.pdf';
+      $file = substr($url, 0, strrpos($url, '.')) . '_' . $start . '_'. $end .'.pdf';
 
       // $exec = 'mutool convert -o image%d.png file.pdf 1-10';
       $execs[] = 'mutool convert -o ' . $file . ' ' . $url . ' ' . $start . '-' . $end;
