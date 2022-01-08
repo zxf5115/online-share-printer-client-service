@@ -90,11 +90,14 @@ trait ToolTrait
    * @param [type] $url 文件地址
    * @return [type]
    */
-  public static function getPageTotal($url)
+  public static function getPageTotal($url, $is_all = true)
   {
-    $url = str_replace('storage', 'storage/app/public', $url);
+    if($is_all)
+    {
+      $url = str_replace('storage', 'storage/app/public', $url);
 
-    $url = base_path() . $url;
+      $url = base_path() . $url;
+    }
 
     $exec = 'pdfinfo -rawdates  ' . $url;
 

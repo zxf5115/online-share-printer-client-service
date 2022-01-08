@@ -161,7 +161,7 @@ class FileQueue implements ShouldQueue
     $execs = [];
 
     // 计算PDF页数
-    $page_total = self::getPageTotal($url);
+    $page_total = self::getPageTotal($url, false);
 
     for($i = 1; $i < 20; $i++)
     {
