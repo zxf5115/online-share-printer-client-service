@@ -8,12 +8,14 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
+use App\TraitClass\ToolTrait;
+
 /**
  * 客户上传文件处理队列
  */
 class FileQueue implements ShouldQueue
 {
-  use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+  use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, ToolTrait;
 
   /**
    * The number of times the job may be attempted.
@@ -61,7 +63,6 @@ class FileQueue implements ShouldQueue
 
       // 将PDF文件最大按照10页分割成多个小PDF
       $this->separate($pdf, 10);
-
     }
     catch(\Exception $e)
     {
@@ -89,7 +90,7 @@ class FileQueue implements ShouldQueue
     {
       return $url;
     }
-    else if('png' == $extension || 'jpg' == $extension || 'jpeg' == $extension)
+    else if('png' == $extension || 'jpg' == $extension || 'jpeg' == $extension || 'gif' == $extension || 'bmp' == $extension || 'tif' == $extension || 'jpeg2000' == $extension)
     {
       $url = str_replace('storage', 'storage/app/public', $url);
 
@@ -151,25 +152,52 @@ class FileQueue implements ShouldQueue
    *
    * 根据开始页数和结束页数进行文件切割
    *
-   * @param [type] $file 文件地址
-   * @param [type] $start 开始页数
-   * @param [type] $end 结束页数
+   * @param [type] $url 文件地址
+   * @param [type] $start 分割页数
    * @return [type]
    */
-  public function separate($file, $page)
+  public function separate($url, $page = 10)
   {
-    $pdf = substr($url, 0, strpos($url, '.')) . '_' . $start . '_'. $end .'.pdf';
+    $execs = [];
 
-    // $exec = 'mutool convert -o image%d.png file.pdf 1-10';
-    $exec = 'mutool convert -o ' . $pdf . ' ' . $file . ' ' . $start . '-' . $end;
+    // 计算PDF页数
+    $page_total = self::getPageTotal($url);
 
-    @exec($exec, $result, $status);
-
-    if(0 < $status)
+    for($i = 1; $i < 20; $i++)
     {
-      Log::error('file separate error');
+      $total = bcdiv($page_total, $i);
 
-      return false;
+      if(10 > $total)
+      {
+        break;
+      }
+    }
+
+    for($x = 0; $x < $i; $x++)
+    {
+      $page = bcmul($x, 10);
+
+      $start = bcadd($page, 1);
+
+      $end = bcadd($page, 10);
+
+      $file = substr($url, 0, strpos($url, '.')) . '_' . $start . '_'. $end .'.pdf';
+
+      // $exec = 'mutool convert -o image%d.png file.pdf 1-10';
+      $execs[] = 'mutool convert -o ' . $file . ' ' . $url . ' ' . $start . '-' . $end;
+    }
+
+    // 分割文件
+    foreach($execs as $exec)
+    {
+      exec($exec, $result, $status);
+
+      if(0 < $status)
+      {
+        Log::error('file separate error');
+
+        return false;
+      }
     }
   }
 }

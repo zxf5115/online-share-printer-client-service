@@ -1,6 +1,8 @@
 <?php
 namespace App\TraitClass;
 
+use Illuminate\Support\Facades\Log;
+
 /**
  * @author zhangxiaofei [<1326336909@qq.com>]
  * @dateTime 2020-10-22
@@ -76,42 +78,19 @@ trait ToolTrait
   }
 
 
-  public static function getPageTotal($path)
-  {
-    // 打开文件
-    if (!$fp = @fopen($path, 'r'))
-    {
-      $error = '打开文件{$path}失败';
-
-      return false;
-    }
-    else
-    {
-      $max=0;
-
-      while(!feof($fp))
-      {
-        $line = fgets($fp, 255);
-
-        if(preg_match('/\/Count [0-9]+/', $line, $matches))
-        {
-          preg_match('/[0-9]+/',$matches[0], $matches2);
-
-          if($max < $matches2[0])
-            $max=$matches2[0];
-        }
-      }
-
-      fclose($fp);
-
-      // 返回页数
-      return $max;
-    }
-  }
-
-
-
-  public function total($url)
+  /**
+   * @author zhangxiaofei [<1326336909@qq.com>]
+   * @dateTime 2022-01-06
+   * ------------------------------------------
+   * 获取PDF文件页数
+   * ------------------------------------------
+   *
+   * 获取PDF文件页数
+   *
+   * @param [type] $url 文件地址
+   * @return [type]
+   */
+  public static function getPageTotal($url)
   {
     $url = str_replace('storage', 'storage/app/public', $url);
 
@@ -131,10 +110,77 @@ trait ToolTrait
       return false;
     }
 
-    if(preg_match("/Pages:\s*(.+)/i", $result, $matches) === 1)
+    foreach($result as $item)
     {
-      $response = $matches[1];
-      break;
+      if(preg_match("/Pages:\s*(.+)/i", $item, $matches) === 1)
+      {
+        $response = $matches[1];
+
+        break;
+      }
+    }
+
+    return $response;
+  }
+
+
+  /**
+   * @author zhangxiaofei [<1326336909@qq.com>]
+   * @dateTime 2022-01-06
+   * ------------------------------------------
+   * 修改文件后缀
+   * ------------------------------------------
+   *
+   * 修改文件后缀
+   *
+   * @param [type] $url 文件地址
+   * @param [type] $extension 文件后缀
+   * @return [type]
+   */
+  public static function changeFileExtension($url, $extension = '.pdf')
+  {
+    return substr($url, 0, strrpos($url, '.')) . $extension;
+  }
+
+
+  /**
+   * @author zhangxiaofei [<1326336909@qq.com>]
+   * @dateTime 2022-01-07
+   * ------------------------------------------
+   * 将大PDF文件分割成多个小PDF文件，返回文件地址
+   * ------------------------------------------
+   *
+   * 将大PDF文件分割成多个小PDF文件，返回文件地址
+   *
+   * @param [type] $url 大PDF文件地址
+   * @return [type]
+   */
+  public static function getSeparateFileUrl($url, $threshold = 10)
+  {
+    $response = [];
+
+    // 计算PDF页数
+    $page_total = self::getPageTotal($url);
+
+    for($i = 1; $i < 20; $i++)
+    {
+      $total = bcdiv($page_total, $i);
+
+      if($threshold > $total)
+      {
+        break;
+      }
+    }
+
+    for($x = 0; $x < $i; $x++)
+    {
+      $page = bcmul($x, 10);
+
+      $start = bcadd($page, 1);
+
+      $end = bcadd($page, 10);
+
+      $response[] = substr($url, 0, strpos($url, '.')) . '_' . $start . '_'. $end .'.pdf';
     }
 
     return $response;

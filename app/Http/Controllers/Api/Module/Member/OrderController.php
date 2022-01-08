@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Constant\Code;
 use App\TraitClass\ToolTrait;
 use App\Events\Api\Member\PayEvent;
+use App\Events\Api\Member\OrderEvent;
 use App\Http\Controllers\Api\BaseController;
 
 
@@ -302,6 +303,8 @@ class OrderController extends BaseController
     }
     else
     {
+      DB::beginTransaction();
+
       try
       {
         $model = $this->_model::getRow(['id' => $request->order_id]);
@@ -309,10 +312,17 @@ class OrderController extends BaseController
         $model->print_total = $request->print_total;
         $model->save();
 
+        // 订单处理
+        event(new OrderEvent($model));
+
+        DB::commit();
+
         return self::success($model);
       }
       catch(\Exception $e)
       {
+        DB::rollback();
+
         // 记录异常信息
         self::record($e);
 

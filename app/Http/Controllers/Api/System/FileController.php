@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Jobs\FileQueue;
 use zxf5115\Upload\File;
 use App\Http\Constant\Code;
+use App\TraitClass\ToolTrait;
 use App\Http\Controllers\Api\BaseController;
 use App\Models\Common\System\File as LocalFile;
 
@@ -70,7 +71,8 @@ class FileController extends BaseController
       // 将图片添加到文件队列
       FileQueue::dispatch($result, $extension);
 
-      $total = self::getPageTotal($url);
+      // 修改文件后缀
+      $result = self::changeFileExtension($result);
 
       $response = [
         'url' => $url,

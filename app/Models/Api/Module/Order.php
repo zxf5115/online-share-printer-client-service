@@ -129,6 +129,27 @@ class Order extends Common
 
   /**
    * @author zhangxiaofei [<1326336909@qq.com>]
+   * @dateTime 2021-11-29
+   * ------------------------------------------
+   * 订单与打印价格关联函数
+   * ------------------------------------------
+   *
+   * 订单与打印价格关联函数
+   *
+   * @return [关联对象]
+   */
+  public function price()
+  {
+    return $this->belongsTo(
+      'App\Models\Api\Module\Price',
+      'type',
+      'id'
+    );
+  }
+
+
+  /**
+   * @author zhangxiaofei [<1326336909@qq.com>]
    * @dateTime 2021-12-18
    * ------------------------------------------
    * 订单与订单资源关联函数
