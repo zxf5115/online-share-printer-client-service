@@ -181,6 +181,8 @@ class FileQueue implements ShouldQueue
 
       $end = bcadd($page, 10);
 
+      $end = $end > $page_total ? $page_total : $end;
+
       $file = substr($url, 0, strrpos($url, '.')) . '_' . $start . '_'. $end .'.pdf';
 
       // $exec = 'mutool convert -o image%d.png file.pdf 1-10';
