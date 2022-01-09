@@ -65,15 +65,15 @@ class NotifyController extends BaseController
         return false;
       }
 
-      $model->confirm_status = 1;
+      $model->order_status = 1;
+      $model->pay_status = 1;
+      $model->pay_time = time();
       $model->save();
 
       Log::info('支付成功');
 
       // 打印队列Socket消耗
       $key = RedisKey::SOCKET_PRINT_QUEUE;
-
-      // $redis = Redis::connection('session');
 
       // 将订单自增编号插入打印队列
       Redis::rpush($key, $model->id);

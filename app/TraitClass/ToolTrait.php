@@ -183,7 +183,7 @@ trait ToolTrait
 
       $end = bcadd($page, 10);
 
-      $response[] = substr($url, 0, strpos($url, '.')) . '_' . $start . '_'. $end .'.pdf';
+      $response[] = substr($url, 0, strrpos($url, '.')) . '_' . $start . '_'. $end .'.pdf';
     }
 
     return $response;
