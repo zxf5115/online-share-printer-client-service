@@ -25,7 +25,7 @@ $api->version('v1', [
       });
 
       // 上传路由
-      $api->group(['prefix' => 'file', 'middleware' => ['auth:api', 'refresh.token.api', 'failure']], function ($api) {
+      $api->group(['prefix' => 'file'], function ($api) {
         // 上传文件
         $api->post('file', 'FileController@file');
         // 上传图片
