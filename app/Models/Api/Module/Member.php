@@ -52,10 +52,10 @@ class Member extends Common
       $model = self::firstOrNew(['open_id' => $open_id, 'status' => 1]);
 
       $model->open_id  = $open_id ?? '';
-      $model->role_id  = 3;
-      $model->avatar   = $request->avatar ?? '';
+      $model->role_id  = 1;
+      $model->avatar   = Parameter::AVATER . '_' . time();
       $model->username = '';
-      $model->nickname = $request->nickname ?? '';
+      $model->nickname = Parameter::NICKNAME;
       $model->save();
 
       $data = [

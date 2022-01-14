@@ -30,6 +30,7 @@ class OrderController extends BaseController
     'view' => [
       'manager',
       'printer',
+      'price'
     ]
   ];
 

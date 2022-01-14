@@ -88,7 +88,7 @@ class LoginController extends BaseController
         // 用户不存在
         if(is_null($response))
         {
-          $response = $this->_model::register($request);
+          $response = $this->_model::register($request, $data['openid']);
         }
 
         // 用户已禁用
