@@ -73,7 +73,7 @@ class OrderListeners
 
       $page_total = 0;
 
-      if(file_exists($url))
+      if(!empty($url))
       {
         // 计算PDF页数
         $page_total = self::getPageTotal($url);
