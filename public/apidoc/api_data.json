@@ -2270,13 +2270,6 @@
             "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "page_total",
-            "description": "<p>打印文件页数</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
             "field": "url",
             "description": "<p>打印原始文件地址</p>"
           },
