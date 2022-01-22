@@ -180,7 +180,6 @@ class OrderController extends BaseController
    * @apiParam {String} manager_id 店长自增编号
    * @apiParam {String} printer_id 打印机自增编号
    * @apiParam {String} filename 打印文件名称
-   * @apiParam {String} page_total 打印文件页数
    * @apiParam {String} url 打印原始文件地址
    * @apiParam {String} pdf_url 打印PDF文件地址
    *
@@ -195,7 +194,6 @@ class OrderController extends BaseController
       'manager_id.required' => '请您输入店长自增编号',
       'printer_id.required' => '请您输入打印机自增编号',
       'filename.required' => '请您输入打印文件名称',
-      'page_total.required' => '请您输入打印文件页数',
       'url.required' => '请您上传打印文件',
       'pdf_url.required' => '请您上传打印文件',
     ];
@@ -206,7 +204,6 @@ class OrderController extends BaseController
       'manager_id' => 'required',
       'printer_id' => 'required',
       'filename' => 'required',
-      'page_total' => 'required',
       'url' => 'required',
       'pdf_url' => 'required',
     ];
@@ -238,7 +235,6 @@ class OrderController extends BaseController
         $model->member_id = self::getCurrentId();
         $model->printer_id = $request->printer_id;
         $model->title = $request->filename;
-        $model->page_total = $request->page_total;
         $model->save();
 
         $data = [

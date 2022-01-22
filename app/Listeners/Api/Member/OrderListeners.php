@@ -8,6 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use App\TraitClass\ToolTrait;
 use App\Models\Api\Module\Price;
 use App\Events\Api\Member\OrderEvent;
+use App\Models\Api\Module\Order\Resource;
 
 /**
  * 订单监听器

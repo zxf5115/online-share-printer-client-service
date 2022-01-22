@@ -24,7 +24,10 @@ class Resource extends Base
   /**
    * 可以被批量赋值的属性
    */
-  public $fillable = [];
+  public $fillable = [
+    'url',
+    'pdf_url'
+  ];
 
   // 追加到模型数组表单的访问器
   public $appends = [];

@@ -1,7 +1,7 @@
 <?php
 namespace App\Models\Api\Module\Order;
 
-use App\Models\Common\Module\Order\Log as Common;
+use App\Models\Common\Module\Order\Resource as Common;
 
 /**
  * @author zhangxiaofei [<1326336909@qq.com>]
