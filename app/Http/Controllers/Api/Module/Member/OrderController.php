@@ -175,10 +175,7 @@ class OrderController extends BaseController
    *   "Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiO"
    * }
    *
-   * @apiParam {String} first_level_agent_id 一级代理商自增编号
-   * @apiParam {String} second_level_agent_id 二级代理商自增编号
-   * @apiParam {String} manager_id 店长自增编号
-   * @apiParam {String} printer_id 打印机自增编号
+   * @apiParam {String} token 二维码密文
    * @apiParam {String} filename 打印文件名称
    * @apiParam {String} url 打印原始文件地址
    * @apiParam {String} pdf_url 打印PDF文件地址
@@ -189,20 +186,14 @@ class OrderController extends BaseController
   public function first_step(Request $request)
   {
     $messages = [
-      'first_level_agent_id.required' => '请您输入一级代理商自增编号',
-      'second_level_agent_id.required' => '请您输入二级代理商自增编号',
-      'manager_id.required' => '请您输入店长自增编号',
-      'printer_id.required' => '请您输入打印机自增编号',
+      'token.required' => '请您输入一级代理商自增编号',
       'filename.required' => '请您输入打印文件名称',
       'url.required' => '请您上传打印文件',
       'pdf_url.required' => '请您上传打印文件',
     ];
 
     $rule = [
-      'first_level_agent_id' => 'required',
-      'second_level_agent_id' => 'required',
-      'manager_id' => 'required',
-      'printer_id' => 'required',
+      'token' => 'required',
       'filename' => 'required',
       'url' => 'required',
       'pdf_url' => 'required',
@@ -228,12 +219,18 @@ class OrderController extends BaseController
           $model->order_no = self::getOrderNo();
         }
 
+        // 将二维码中内容进行解密
+        $token = self::decrypt($request->token);
+
+        // 将内容解析成数组
+        parse_str($token, $data);
+
         $model->organization_id = self::getOrganizationId();
-        $model->first_level_agent_id = $request->first_level_agent_id;
-        $model->second_level_agent_id = $request->second_level_agent_id;
-        $model->manager_id = $request->manager_id;
+        $model->first_level_agent_id = $data['first_level_agent_id'];
+        $model->second_level_agent_id = $data['second_level_agent_id'];
+        $model->manager_id = $data['manager_id'];
         $model->member_id = self::getCurrentId();
-        $model->printer_id = $request->printer_id;
+        $model->printer_id = $data['printer_id'];
         $model->title = $request->filename;
         $model->save();
 

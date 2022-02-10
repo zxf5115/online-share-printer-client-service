@@ -2235,29 +2235,8 @@
             "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "first_level_agent_id",
-            "description": "<p>一级代理商自增编号</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "second_level_agent_id",
-            "description": "<p>二级代理商自增编号</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "manager_id",
-            "description": "<p>店长自增编号</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "printer_id",
-            "description": "<p>打印机自增编号</p>"
+            "field": "token",
+            "description": "<p>二维码密文</p>"
           },
           {
             "group": "Parameter",
