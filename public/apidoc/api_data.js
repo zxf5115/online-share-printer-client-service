@@ -753,13 +753,6 @@ define({ "api": [
             "group": "字段说明",
             "type": "string",
             "optional": false,
-            "field": "url",
-            "description": "<p>文件地址</p>"
-          },
-          {
-            "group": "字段说明",
-            "type": "string",
-            "optional": false,
             "field": "filename",
             "description": "<p>文件名称</p>"
           },
@@ -767,8 +760,15 @@ define({ "api": [
             "group": "字段说明",
             "type": "string",
             "optional": false,
-            "field": "page",
-            "description": "<p>文件页数</p>"
+            "field": "url",
+            "description": "<p>打印原始文件地址</p>"
+          },
+          {
+            "group": "字段说明",
+            "type": "string",
+            "optional": false,
+            "field": "pdf_url",
+            "description": "<p>打印PDF文件地址</p>"
           }
         ]
       }

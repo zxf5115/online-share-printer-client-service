@@ -35,9 +35,9 @@ class FileController extends BaseController
    * @apiParam {string} file 文件数据
    * @apiParam {string} [category] 文件分类 excel word pdf video audio ...
    *
-   * @apiSuccess (字段说明) {string} url 文件地址
    * @apiSuccess (字段说明) {string} filename 文件名称
-   * @apiSuccess (字段说明) {string} page 文件页数
+   * @apiSuccess (字段说明) {string} url 打印原始文件地址
+   * @apiSuccess (字段说明) {string} pdf_url 打印PDF文件地址
    *
    * @apiSampleRequest /api/file/file
    * @apiVersion 1.0.0
