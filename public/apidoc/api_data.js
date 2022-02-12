@@ -181,6 +181,13 @@ define({ "api": [
             "group": "Parameter",
             "type": "string",
             "optional": false,
+            "field": "type",
+            "description": "<p>登录方式 1: openid登录 2: 一键登录</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
             "field": "avatar",
             "description": "<p>会员头像</p>"
           },
@@ -1725,6 +1732,13 @@ define({ "api": [
             "optional": true,
             "field": "region_id",
             "description": "<p>县</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": true,
+            "field": "address",
+            "description": "<p>详细地址</p>"
           }
         ]
       }

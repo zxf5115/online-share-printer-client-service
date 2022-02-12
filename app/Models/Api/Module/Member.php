@@ -43,18 +43,27 @@ class Member extends Common
    *
    * @return [type]
    */
-  public static function register($request, $open_id)
+  public static function register($request, $data, $type)
   {
     DB::beginTransaction();
 
     try
     {
-      $model = self::firstOrNew(['open_id' => $open_id, 'status' => 1]);
+      if(1 == $type)
+      {
+        $model = self::firstOrNew(['open_id' => $data, 'status' => 1]);
+        $model->open_id  = $data ?? '';
+        $model->username = '';
+      }
+      else
+      {
+        $model = self::firstOrNew(['username' => $data, 'status' => 1]);
+        $model->username  = $data ?? '';
+        $model->open_id = '';
+      }
 
-      $model->open_id  = $open_id ?? '';
       $model->role_id  = 1;
       $model->avatar   = Parameter::AVATER . '_' . time();
-      $model->username = '';
       $model->nickname = Parameter::NICKNAME;
       $model->save();
 
@@ -131,6 +140,75 @@ class Member extends Common
     $res = $client->request('GET', $url);
 
     //openid和session_key
+    return json_decode($res->getBody()->getContents(), true);
+  }
+
+
+  /**
+   * @author zhangxiaofei [<1326336909@qq.com>]
+   * @dateTime 2022-02-12
+   * ------------------------------------------
+   * 获取微信token信息
+   * ------------------------------------------
+   *
+   * 获取微信token信息
+   *
+   * @param string $code [description]
+   * @return [type]
+   */
+  public static function  getWeixinToken()
+  {
+    $param = [];
+
+    $param[] = 'grant_type=client_credential';
+    $param[] = 'appid=' . config('weixin.weixin_key');
+    $param[] = 'secret=' . config('weixin.weixin_secret');
+
+    $params = implode('&', $param);    //用&符号连起来
+
+    $url = config('weixin.weixin_token_url') . '?' . $params;
+
+    //请求接口
+    $client = new \GuzzleHttp\Client([
+        'timeout' => 60
+    ]);
+
+    $res = $client->request('GET', $url);
+
+    return json_decode($res->getBody()->getContents(), true);
+  }
+
+
+  /**
+   * @author zhangxiaofei [<1326336909@qq.com>]
+   * @dateTime 2022-02-12
+   * ------------------------------------------
+   * 获取微信手机号码信息
+   * ------------------------------------------
+   *
+   * 获取微信手机号码信息
+   *
+   * @param string $code [description]
+   * @return [type]
+   */
+  public static function  getWeixinMobile($code)
+  {
+    $param = [];
+
+    $param[] = 'access_token =' . self::getWeixinToken();
+    $param[] = 'code=' . $code;
+
+    $params = implode('&', $param);    //用&符号连起来
+
+    $url = config('weixin.weixin_mobile_url') . '?' . $params;
+
+    //请求接口
+    $client = new \GuzzleHttp\Client([
+        'timeout' => 60
+    ]);
+
+    $res = $client->request('GET', $url);
+
     return json_decode($res->getBody()->getContents(), true);
   }
 

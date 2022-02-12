@@ -153,6 +153,7 @@ class MemberController extends BaseController
    * @apiParam {string} [province_id] 省
    * @apiParam {string} [city_id] 市
    * @apiParam {string} [region_id] 县
+   * @apiParam {string} [address] 详细地址
    *
    * @apiSampleRequest /api/member/handle
    * @apiVersion 1.0.0

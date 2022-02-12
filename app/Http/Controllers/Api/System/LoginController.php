@@ -26,6 +26,7 @@ class LoginController extends BaseController
    * @apiGroup 01. 登录模块
    *
    * @apiParam {string} code 微信code
+   * @apiParam {string} type 登录方式 1: openid登录 2: 一键登录
    * @apiParam {string} avatar 会员头像
    * @apiParam {string} nickname 会员姓名
    * @apiParam {string} [sex] 会员性别
@@ -70,16 +71,33 @@ class LoginController extends BaseController
     {
       try
       {
-        $data = Member::getUserOpenId($request->code);
-
-        if(empty($data) || empty($data['openid']))
-        {
-          return self::error(Code::WX_REQUIRE_ERROR);
-        }
-
         $condition = self::getSimpleWhereData();
 
-        $where = ['open_id' => $data['openid']];
+        // openid登录
+        if(1 == $request->type)
+        {
+          $data = Member::getUserOpenId($request->code);
+
+          if(empty($data) || empty($data['openid']))
+          {
+            return self::error(Code::WX_REQUIRE_ERROR);
+          }
+
+          $where = ['open_id' => $data['openid']];
+        }
+        // 一键登录
+        else
+        {
+          // 获取微信手机号码
+          $data = Member::getWeixinMobile($request->code);
+
+          if(!empty($data['errcode']))
+          {
+            return self::error(Code::WX_REQUIRE_ERROR);
+          }
+
+          $where = ['username' => $data['phone_info']['purePhoneNumber']];
+        }
 
         $where = array_merge($condition, $where);
 
@@ -88,7 +106,14 @@ class LoginController extends BaseController
         // 用户不存在
         if(is_null($response))
         {
-          $response = $this->_model::register($request, $data['openid']);
+          if(1 == $request->type)
+          {
+            $response = $this->_model::register($request, $data['openid'], $request->type);
+          }
+          else
+          {
+            $response = $this->_model::register($request, $data['phone_info']['purePhoneNumber'], $request->type);
+          }
         }
 
         // 用户已禁用
