@@ -90,7 +90,7 @@ class PayListeners
         'out_trade_no' => $order->order_no,
         'body' => '订单支付',
         'total_fee' => $pay_money,
-        'openid' => config('pay.wechat.miniapp_id');,
+        'openid' => config('pay.wechat.miniapp_id'),
       ];
 
       $config  = config('pay.wechat');
