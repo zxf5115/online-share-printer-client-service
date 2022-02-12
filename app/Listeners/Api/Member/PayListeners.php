@@ -84,7 +84,7 @@ class PayListeners
   {
     try
     {
-      $pay_money = intval(bcmul($order->money, 100));
+      $pay_money = intval(bcmul($order->pay_money, 100));
 
       $data = [
         'out_trade_no' => $order->order_no,
