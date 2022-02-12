@@ -18,6 +18,29 @@ class Order extends Common
     'update_time'
   ];
 
+  // 追加到模型数组表单的访问器
+  protected $appends = [
+    'all_page_total'
+  ];
+
+
+  /**
+   * @author zhangxiaofei [<1326336909@qq.com>]
+   * @dateTime 2020-12-20
+   * ------------------------------------------
+   * 阅读状态封装
+   * ------------------------------------------
+   *
+   * 阅读状态封装
+   *
+   * @param [type] $value [description]
+   * @return [type]
+   */
+  public function getAllPageTotalAttribute($value)
+  {
+    return bcmul($this->page_total, $this->print_total);
+  }
+
 
   // 关联函数 ------------------------------------------------------
 
