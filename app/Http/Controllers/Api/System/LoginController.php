@@ -26,6 +26,8 @@ class LoginController extends BaseController
    * @apiGroup 01. 登录模块
    *
    * @apiParam {string} code 微信code
+   * @apiParam {string} data 一键登录加密数据
+   * @apiParam {string} iv 一键登录初始向量
    * @apiParam {string} type 登录方式 1: openid登录 2: 一键登录
    * @apiParam {string} avatar 会员头像
    * @apiParam {string} nickname 会员姓名
@@ -53,11 +55,11 @@ class LoginController extends BaseController
   public function weixin_login(Request $request)
   {
     $messages = [
-      'code.required' => '请输入微信编号',
+      // 'code.required' => '请输入微信编号',
     ];
 
     $rule = [
-      'code' => 'required',
+      // 'code' => 'required',
     ];
 
     // 验证用户数据内容是否正确
@@ -89,7 +91,7 @@ class LoginController extends BaseController
         else
         {
           // 获取微信手机号码
-          $data = Member::getWeixinMobile($request->code);
+          $data = Member::getWeixinMobile($request->data, $request->iv);
 
           if(!empty($data['errcode']))
           {

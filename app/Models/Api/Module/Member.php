@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\DB;
 
 use App\TraitClass\ToolTrait;
 use App\Http\Constant\Parameter;
+use App\TraitClass\WXBizDataCrypt;
 use App\Models\Common\Module\Member as Common;
 
 
@@ -191,25 +192,16 @@ class Member extends Common
    * @param string $code [description]
    * @return [type]
    */
-  public static function  getWeixinMobile($code)
+  public static function  getWeixinMobile($data, $iv)
   {
-    $param = [];
+    $appid = config('weixin.weixin_key');
+    $secret = config('weixin.weixin_secret');
 
-    $param[] = 'access_token =' . self::getWeixinToken();
-    $param[] = 'code=' . $code;
+    $model = new WXBizDataCrypt($appid, $secret);
 
-    $params = implode('&', $param);    //用&符号连起来
+    $errCode = $model->decryptData($data, $iv, $response);
 
-    $url = config('weixin.weixin_mobile_url') . '?' . $params;
-
-    //请求接口
-    $client = new \GuzzleHttp\Client([
-        'timeout' => 60
-    ]);
-
-    $res = $client->request('GET', $url);
-
-    return json_decode($res->getBody()->getContents(), true);
+    return $response;
   }
 
 
