@@ -3,9 +3,11 @@ namespace App\Http\Controllers\Api\Module\Member;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 
 use App\Http\Constant\Code;
 use App\TraitClass\ToolTrait;
+use App\Http\Constant\RedisKey;
 use App\Events\Api\Member\PayEvent;
 use App\Events\Api\Member\OrderEvent;
 use App\Http\Controllers\Api\BaseController;
@@ -409,8 +411,64 @@ class OrderController extends BaseController
 
 
   /**
-   * @api {post} /api/member/order/delete 06. 删除记录
-   * @apiDescription 当前会员把课程删除购物车
+   * @api {post} /api/member/order/again 06. 二次打印
+   * @apiDescription 当前会员重新打印
+   * @apiGroup 23. 会员订单模块
+   * @apiPermission jwt
+   * @apiHeader {String} Authorization 身份令牌
+   * @apiHeaderExample {json} Header-Example:
+   * {
+   *   "Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiO"
+   * }
+   *
+   * @apiParam {string} id 订单自增编号
+   *
+   * @apiSampleRequest /api/member/order/again
+   * @apiVersion 1.0.0
+   */
+  public function again(Request $request)
+  {
+    $messages = [
+      'id.required' => '请您输入订单自增编号',
+    ];
+
+    $rule = [
+      'id' => 'required',
+    ];
+
+    // 验证用户数据内容是否正确
+    $validation = self::validation($request, $messages, $rule);
+
+    if(!$validation['status'])
+    {
+      return $validation['message'];
+    }
+    else
+    {
+      try
+      {
+        // 打印队列Socket消耗
+        $key = RedisKey::SOCKET_PRINT_QUEUE;
+
+        // 将订单自增编号插入打印队列
+        Redis::rpush($key, $request->id);
+
+        return self::success(Code::message(Code::HANDLE_SUCCESS));
+      }
+      catch(\Exception $e)
+      {
+        // 记录异常信息
+        self::record($e);
+
+        return self::error(Code::HANDLE_FAILURE);
+      }
+    }
+  }
+
+
+  /**
+   * @api {post} /api/member/order/delete 07. 删除记录
+   * @apiDescription 当前会员订单记录
    * @apiGroup 23. 会员订单模块
    * @apiPermission jwt
    * @apiHeader {String} Authorization 身份令牌

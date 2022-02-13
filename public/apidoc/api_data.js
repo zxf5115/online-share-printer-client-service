@@ -2159,9 +2159,63 @@ define({ "api": [
   },
   {
     "type": "post",
+    "url": "/api/member/order/again",
+    "title": "06. 二次打印",
+    "description": "<p>当前会员重新打印</p>",
+    "group": "23._会员订单模块",
+    "permission": [
+      {
+        "name": "jwt"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>身份令牌</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header-Example:",
+          "content": "{\n  \"Authorization\": \"Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiO\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "id",
+            "description": "<p>订单自增编号</p>"
+          }
+        ]
+      }
+    },
+    "sampleRequest": [
+      {
+        "url": "/api/member/order/again"
+      }
+    ],
+    "version": "1.0.0",
+    "filename": "app/Http/Controllers/Api/Module/Member/OrderController.php",
+    "groupTitle": "23._会员订单模块",
+    "name": "PostApiMemberOrderAgain"
+  },
+  {
+    "type": "post",
     "url": "/api/member/order/delete",
-    "title": "06. 删除记录",
-    "description": "<p>当前会员把课程删除购物车</p>",
+    "title": "07. 删除记录",
+    "description": "<p>当前会员订单记录</p>",
     "group": "23._会员订单模块",
     "permission": [
       {

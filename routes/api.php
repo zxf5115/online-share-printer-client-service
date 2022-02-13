@@ -137,6 +137,7 @@ $api->version('v1', [
             $api->post('second_step', 'OrderController@second_step');
             $api->post('handle', 'OrderController@handle');
             $api->post('pay', 'OrderController@pay');
+            $api->post('again', 'OrderController@again');
             $api->post('delete', 'OrderController@delete');
           });
         });
