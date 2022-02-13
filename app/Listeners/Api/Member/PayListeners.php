@@ -4,8 +4,8 @@ namespace App\Listeners\Api\Member;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
+use App\Models\Api\Module\Member;
 use App\Events\Api\Member\PayEvent;
-use use App\Models\Api\Module\Member;
 
 use Yansongda\Pay\Log;
 use Yansongda\Pay\Pay;
