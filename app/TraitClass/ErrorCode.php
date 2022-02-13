@@ -1,4 +1,5 @@
 <?php
+namespace App\TraitClass;
 
 /**
  * error code 说明.
