@@ -91,7 +91,7 @@ class PayListeners
 
       $data = [
         'out_trade_no' => $order->order_no,
-        'description' => '订单支付',
+        'body' => '订单支付',
         'total_fee' => $pay_money,
         'openid' => $member->open_id,
       ];
