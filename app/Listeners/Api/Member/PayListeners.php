@@ -5,6 +5,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 use App\Events\Api\Member\PayEvent;
+use use App\Models\Api\Module\Member;
 
 use Yansongda\Pay\Log;
 use Yansongda\Pay\Pay;
@@ -86,20 +87,20 @@ class PayListeners
     {
       $pay_money = intval(bcmul($order->pay_money, 100));
 
+      $member = Member::getRow(['id' => $order->member_id]);
+
       $data = [
         'out_trade_no' => $order->order_no,
-        'body' => '订单支付',
+        'description' => '订单支付',
         'total_fee' => $pay_money,
-        'openid' => config('pay.wechat.miniapp_id'),
+        'openid' => $member->open_id,
       ];
 
       $config  = config('pay.wechat');
 
       $result = Pay::wechat($config)->miniapp($data);
 
-      $content = $result->getContent() ?? '';
-
-      $response = json_decode($content, true) ?? [];
+      $response = json_decode($result, true) ?? [];
 
       return $response;
     }
