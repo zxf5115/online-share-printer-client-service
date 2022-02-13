@@ -11,11 +11,11 @@ namespace App\Http\Constant;
 class Parameter
 {
   // 默认头像
-  const AVATER = 'https://xiaocy.obs.cn-south-1.myhuaweicloud.com/avatar/2021-01-03/avatar.png';
+  const AVATER = 'https://vstown-printer.oss-cn-beijing.aliyuncs.com/circle.png';
 
   // 默认密码
   const PASSWORD = '123456';
 
   // 默认昵称
-  const NICKNAME = '币码翁';
+  const NICKNAME = '共享打印';
 }

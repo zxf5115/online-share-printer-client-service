@@ -64,8 +64,8 @@ class Member extends Common
       }
 
       $model->role_id  = 1;
-      $model->avatar   = Parameter::AVATER . '_' . time();
-      $model->nickname = Parameter::NICKNAME;
+      $model->avatar   = Parameter::AVATER;
+      $model->nickname = Parameter::NICKNAME . '_' . time();
       $model->save();
 
       $data = [
