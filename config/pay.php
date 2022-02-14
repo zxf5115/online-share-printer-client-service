@@ -7,7 +7,7 @@ return [
         'app_id' => 'wxb8cfb77546b84cd1', // 公众号 APPID
         'miniapp_id' => 'wxb8cfb77546b84cd1', // 小程序 APPID
         'mch_id' => '1494847022',
-        'key' => '604b2e5e90a675d3cfb73c13cfd9a18b',
+        'key' => 'bb908bd5d209af487eee6f095f90d1df',
         'notify_url' => 'https://client.vstown.cc/api/common/notify/wechat',
         'cert_client' => './cert/apiclient_cert.pem', // optional，退款等情况时用到
         'cert_key' => './cert/apiclient_key.pem',// optional，退款等情况时用到
