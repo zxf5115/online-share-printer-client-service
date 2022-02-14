@@ -58,9 +58,9 @@ class Member extends Common
       }
       else
       {
-        $model = self::firstOrNew(['username' => $data, 'status' => 1]);
-        $model->username  = $data ?? '';
-        $model->open_id = '';
+        $model = self::firstOrNew(['username' => $data['purePhoneNumber'], 'status' => 1]);
+        $model->username  = $data['purePhoneNumber'] ?? '';
+        $model->open_id = $data['openid'];
       }
 
       $model->role_id  = 1;
@@ -205,6 +205,8 @@ class Member extends Common
     $errCode = $model->decryptData($request, $iv, $response);
 
     $response = json_decode($response, true);
+
+    $response['openid'] = $data['openid'];
 
     return $response;
   }

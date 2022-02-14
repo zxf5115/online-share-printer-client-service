@@ -114,7 +114,7 @@ class LoginController extends BaseController
           }
           else
           {
-            $response = $this->_model::register($request, $data['purePhoneNumber'], $request->type);
+            $response = $this->_model::register($request, $data, $request->type);
           }
         }
 
