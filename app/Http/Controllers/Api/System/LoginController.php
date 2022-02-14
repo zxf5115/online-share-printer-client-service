@@ -93,12 +93,12 @@ class LoginController extends BaseController
           // 获取微信手机号码
           $data = Member::getWeixinMobile($request->code, $request->data, $request->iv);
 
-          if(!empty($data['errcode']))
+          if(empty($data['purePhoneNumber']))
           {
             return self::error(Code::WX_REQUIRE_ERROR);
           }
 
-          $where = ['username' => $data['phone_info']['purePhoneNumber']];
+          $where = ['username' => $data['purePhoneNumber']];
         }
 
         $where = array_merge($condition, $where);
@@ -114,7 +114,7 @@ class LoginController extends BaseController
           }
           else
           {
-            $response = $this->_model::register($request, $data['phone_info']['purePhoneNumber'], $request->type);
+            $response = $this->_model::register($request, $data['purePhoneNumber'], $request->type);
           }
         }
 

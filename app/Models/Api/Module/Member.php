@@ -204,6 +204,8 @@ class Member extends Common
 
     $errCode = $model->decryptData($request, $iv, $response);
 
+    $response = json_decode($response, true);
+
     return $response;
   }
 
