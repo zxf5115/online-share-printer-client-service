@@ -3,11 +3,11 @@
 return [
 
     'wechat' => [
-        'appid' => 'wxe011d49d77124e2b', // APP APPID
-        'app_id' => 'wxe011d49d77124e2b', // 公众号 APPID
-        'miniapp_id' => 'wxe011d49d77124e2b', // 小程序 APPID
+        'appid' => 'wxb8cfb77546b84cd1', // APP APPID
+        'app_id' => 'wxb8cfb77546b84cd1', // 公众号 APPID
+        'miniapp_id' => 'wxb8cfb77546b84cd1', // 小程序 APPID
         'mch_id' => '1494847022',
-        'key' => 'bb908bd5d209af487eee6f095f90d1df',
+        'key' => '604b2e5e90a675d3cfb73c13cfd9a18b',
         'notify_url' => 'https://client.vstown.cc/api/common/notify/wechat',
         'cert_client' => './cert/apiclient_cert.pem', // optional，退款等情况时用到
         'cert_key' => './cert/apiclient_key.pem',// optional，退款等情况时用到

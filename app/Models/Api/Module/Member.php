@@ -192,7 +192,7 @@ class Member extends Common
    * @param string $code [description]
    * @return [type]
    */
-  public static function getWeixinMobile($code, $data, $iv)
+  public static function getWeixinMobile($code, $request, $iv)
   {
     $appid = config('weixin.weixin_key');
 
@@ -202,7 +202,7 @@ class Member extends Common
 
     $model = new WXBizDataCrypt($appid, $secret);
 
-    $errCode = $model->decryptData($data, $iv, $response);
+    $errCode = $model->decryptData($request, $iv, $response);
 
     return $response;
   }
