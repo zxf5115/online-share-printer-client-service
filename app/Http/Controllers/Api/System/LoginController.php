@@ -55,11 +55,11 @@ class LoginController extends BaseController
   public function weixin_login(Request $request)
   {
     $messages = [
-      // 'code.required' => '请输入微信编号',
+      'code.required' => '请输入微信编号',
     ];
 
     $rule = [
-      // 'code' => 'required',
+      'code' => 'required',
     ];
 
     // 验证用户数据内容是否正确
@@ -91,7 +91,7 @@ class LoginController extends BaseController
         else
         {
           // 获取微信手机号码
-          $data = Member::getWeixinMobile($request->data, $request->iv);
+          $data = Member::getWeixinMobile($request->code, $request->data, $request->iv);
 
           if(!empty($data['errcode']))
           {

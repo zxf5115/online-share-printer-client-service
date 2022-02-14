@@ -192,10 +192,13 @@ class Member extends Common
    * @param string $code [description]
    * @return [type]
    */
-  public static function  getWeixinMobile($data, $iv)
+  public static function getWeixinMobile($code, $data, $iv)
   {
     $appid = config('weixin.weixin_key');
-    $secret = config('weixin.weixin_secret');
+
+    $data = self::getUserOpenId($code);
+
+    $secret = $data['session_key'];
 
     $model = new WXBizDataCrypt($appid, $secret);
 
