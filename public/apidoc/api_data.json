@@ -181,6 +181,20 @@
             "group": "Parameter",
             "type": "string",
             "optional": false,
+            "field": "data",
+            "description": "<p>一键登录加密数据</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "iv",
+            "description": "<p>一键登录初始向量</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
             "field": "type",
             "description": "<p>登录方式 1: openid登录 2: 一键登录</p>"
           },
