@@ -349,7 +349,7 @@ class MemberController extends BaseController
 
         $condition = self::getSimpleWhereData($username, 'username');
 
-        $model = Member::getRow($condition);
+        $model = $this->_model::getRow($condition);
 
         if(empty($model->id))
         {
@@ -425,6 +425,71 @@ class MemberController extends BaseController
       self::record($e);
 
       return self::error(Code::ERROR);
+    }
+  }
+
+
+  /**
+   * @api {post} /api/member/mobile 07. 会员手机号码
+   * @apiDescription 根据会员编号获取会员数据
+   * @apiGroup 20. 会员模块
+   * @apiPermission jwt
+   * @apiHeader {String} Authorization 身份令牌
+   * @apiHeaderExample {json} Header-Example:
+   * {
+   *   "Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiO"
+   * }
+   *
+   * @apiParam {string} code 微信code
+   * @apiParam {string} data 一键登录加密数据
+   * @apiParam {string} iv 一键登录初始向量
+   *
+   * @apiSuccess (字段说明) {String} data 手机号码
+   *
+   * @apiSampleRequest /api/member/mobile
+   * @apiVersion 1.0.0
+   */
+  public function mobile(Request $request)
+  {
+
+    $messages = [
+      'code.required' => '请输入微信编号',
+    ];
+
+    $rule = [
+      'code' => 'required',
+    ];
+
+    // 验证用户数据内容是否正确
+    $validation = self::validation($request, $messages, $rule);
+
+    if(!$validation['status'])
+    {
+      return $validation['message'];
+    }
+    else
+    {
+      try
+      {
+        // 获取微信手机号码
+        $data = $this->_model::getWeixinMobile($request->code, $request->data, $request->iv);
+
+        if(empty($data['purePhoneNumber']))
+        {
+          return self::error(Code::WX_REQUIRE_ERROR);
+        }
+
+        $response = $data['purePhoneNumber'];
+
+        return self::success($response);
+      }
+      catch(\Exception $e)
+      {
+        // 记录异常信息
+        self::record($e);
+
+        return self::error(Code::ERROR);
+      }
     }
   }
 }

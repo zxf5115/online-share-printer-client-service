@@ -110,6 +110,7 @@ $api->version('v1', [
         $api->post('change_code', 'MemberController@change_code');
         $api->post('change_mobile', 'MemberController@change_mobile');
         $api->get('data', 'MemberController@data');
+        $api->post('mobile', 'MemberController@mobile');
 
 
         // 会员关联内容路由
