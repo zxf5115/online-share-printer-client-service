@@ -117,7 +117,7 @@ class FileController extends BaseController
     {
       $category = $request->category ?? 'picture';
 
-      $response = File::picture($request->file, $category);
+      $response = File::picture('file', $category);
 
       // 如果返回错误代码
       if(false === strpos($response, 'http'))
