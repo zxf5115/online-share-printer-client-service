@@ -221,18 +221,15 @@ class OrderController extends BaseController
           $model->order_no = self::getOrderNo();
         }
 
-        // 将二维码中内容进行解密
-        $token = self::decrypt($request->token);
-
         // 将内容解析成数组
-        parse_str($token, $data);
+        $data = explode(';', $request->token);
 
         $model->organization_id = self::getOrganizationId();
-        $model->first_level_agent_id = $data['first_level_agent_id'];
-        $model->second_level_agent_id = $data['second_level_agent_id'];
-        $model->manager_id = $data['manager_id'];
+        $model->first_level_agent_id = self::decrypt($data['0']);
+        $model->second_level_agent_id = self::decrypt($data['1']);
+        $model->manager_id = self::decrypt($data['2']);
         $model->member_id = self::getCurrentId();
-        $model->printer_id = $data['printer_id'];
+        $model->printer_id = self::decrypt($data['3']);
         $model->title = $request->filename;
         $model->save();
 

@@ -48,6 +48,28 @@ class Member extends Base
 
   /**
    * @author zhangxiaofei [<1326336909@qq.com>]
+   * @dateTime 2022-02-23
+   * ------------------------------------------
+   * 电话号码封装
+   * ------------------------------------------
+   *
+   * 电话号码封装
+   *
+   * @param int $value 状态值
+   * @return 状态信息
+   */
+  public function getUsernameAttribute($value)
+  {
+    $length = strlen($value) - 7;
+
+    $data = str_repeat('*', $length);
+
+    return substr_replace($value, $data, 3, $length);
+  }
+
+
+  /**
+   * @author zhangxiaofei [<1326336909@qq.com>]
    * @dateTime 2020-12-20
    * ------------------------------------------
    * 会员状态封装

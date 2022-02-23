@@ -48,6 +48,28 @@ class Organization extends Base
 
   /**
    * @author zhangxiaofei [<1326336909@qq.com>]
+   * @dateTime 2022-02-23
+   * ------------------------------------------
+   * 电话号码封装
+   * ------------------------------------------
+   *
+   * 电话号码封装
+   *
+   * @param int $value 状态值
+   * @return 状态信息
+   */
+  public function getUsernameAttribute($value)
+  {
+    $length = strlen($value) - 7;
+
+    $data = str_repeat('*', $length);
+
+    return substr_replace($value, $data, 3, $length);
+  }
+
+
+  /**
+   * @author zhangxiaofei [<1326336909@qq.com>]
    * @dateTime 2021-09-24
    * ------------------------------------------
    * 机构级别封装
