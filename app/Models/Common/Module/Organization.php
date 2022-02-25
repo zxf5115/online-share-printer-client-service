@@ -62,6 +62,11 @@ class Organization extends Base
   {
     $length = strlen($value) - 7;
 
+    if(0 >= $length)
+    {
+      return $value;
+    }
+
     $data = str_repeat('*', $length);
 
     return substr_replace($value, $data, 3, $length);
