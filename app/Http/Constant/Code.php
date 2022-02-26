@@ -171,6 +171,9 @@ class Code
   // 已经加入购物车
   const ALREADY_ADD_CART = 10004;
 
+  // 打印机不可用
+  const PRINTER_ERROR = 10005;
+
   public static $message = [
     self::SUCCESS            => '成功',
     self::LOGOUT_SUCCESS     => '成功退出',
@@ -281,6 +284,9 @@ class Code
 
     self::INSUFFICIENT_FUND => '账户金额不足',
     self::ALREADY_ADD_CART => '已经加入购物车',
+
+    self::PRINTER_ERROR => '打印机不可用',
+
 
   ];
 

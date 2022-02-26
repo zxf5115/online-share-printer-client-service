@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Redis;
 use App\Http\Constant\Code;
 use App\TraitClass\ToolTrait;
 use App\Http\Constant\RedisKey;
+use App\Models\Api\Module\Printer;
 use App\Events\Api\Member\PayEvent;
 use App\Events\Api\Member\OrderEvent;
 use App\Http\Controllers\Api\BaseController;
@@ -214,6 +215,28 @@ class OrderController extends BaseController
 
       try
       {
+        // 将内容解析成数组
+        $data = explode(';', $request->token);
+
+        // 如果无法解析返回错误
+        if(!is_array($data))
+        {
+          return self::error(Code::ERROR);
+        }
+
+        $first_level_agent_id = self::decrypt($data['0']);
+        $second_level_agent_id = self::decrypt($data['1']);
+        $manager_id = self::decrypt($data['2']);
+        $printer_id = self::decrypt($data['3']);
+
+        $printer = Printer::getRow(['id' => $printer_id, 'status' => 1]);
+
+        // 打印机不可用
+        if(empty($printer->id))
+        {
+          return self::error(Code::PRINTER_ERROR);
+        }
+
         $model = $this->_model::firstOrNew(['id' => $request->id]);
 
         if(empty($request->id))
@@ -221,15 +244,12 @@ class OrderController extends BaseController
           $model->order_no = self::getOrderNo();
         }
 
-        // 将内容解析成数组
-        $data = explode(';', $request->token);
-
         $model->organization_id = self::getOrganizationId();
-        $model->first_level_agent_id = self::decrypt($data['0']);
-        $model->second_level_agent_id = self::decrypt($data['1']);
-        $model->manager_id = self::decrypt($data['2']);
+        $model->first_level_agent_id = $first_level_agent_id;
+        $model->second_level_agent_id = $second_level_agent_id;
+        $model->manager_id = $manager_id;
         $model->member_id = self::getCurrentId();
-        $model->printer_id = self::decrypt($data['3']);
+        $model->printer_id = $printer_id;
         $model->title = $request->filename;
         $model->save();
 

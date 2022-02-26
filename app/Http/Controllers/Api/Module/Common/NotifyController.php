@@ -10,6 +10,7 @@ use Yansongda\Pay\Pay;
 use App\Http\Constant\Code;
 use App\Http\Constant\RedisKey;
 use App\Models\Common\Module\Order;
+use App\Events\Api\Member\DivideEvent;
 use App\Http\Controllers\Api\BaseController;
 use Yansongda\Pay\Exceptions\GatewayException;
 
@@ -71,6 +72,9 @@ class NotifyController extends BaseController
       $model->save();
 
       Log::info('支付成功');
+
+      // 订单分红
+      event(new DivideEvent($model));
 
       // 打印队列Socket消耗
       $key = RedisKey::SOCKET_PRINT_QUEUE;

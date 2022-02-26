@@ -56,6 +56,11 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\Api\Member\OrderEvent' => [
             'App\Listeners\Api\Member\OrderListeners',
         ],
+
+        // 分红
+        'App\Events\Api\Member\DivideEvent' => [
+            'App\Listeners\Api\Member\DivideListeners',
+        ],
     ];
 
     /**
