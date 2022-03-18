@@ -6,6 +6,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 use App\TraitClass\ToolTrait;
+use App\Models\Common\System\Config;
 use App\Events\Api\Member\DivideEvent;
 use App\Models\Api\Module\Order\Resource;
 use App\Models\Api\Module\Organization\Asset;
@@ -75,19 +76,21 @@ class DivideListeners
         return false;
       }
 
-      // 一级代理商收益
-      $manager_proportion = $this->agent($order->id, $first_level_agent_id, $total);
+      // 平台手续费税率
+      $rate = Config::getValue('value', ['title' => 'withdrawal_rate']);
 
+      // 一级代理商收益
+      $manager_proportion = $this->agent($order->id, $first_level_agent_id, $total, $rate);
 
       // 如果二级代理商存在
       if(!empty($second_level_agent_id))
       {
         // 二级代理商收益
-        $manager_proportion = $this->agent($order->id, $second_level_agent_id, $total);
+        $manager_proportion = $this->agent($order->id, $second_level_agent_id, $total, $rate);
       }
 
       // 店长收益
-      $this->manager($order->id, $manager_id, $total, $manager_proportion);
+      $this->manager($order->id, $manager_id, $total, $manager_proportion, $rate);
 
       return true;
     }
@@ -114,7 +117,7 @@ class DivideListeners
    * @param [type] $total 打印总页数
    * @return [type]
    */
-  private function agent($order_id, $member_id, $total)
+  private function agent($order_id, $member_id, $total, $rate)
   {
     // 查询一级代理商资产信息
     $asset = Asset::getRow(['member_id' => $member_id]);
@@ -124,14 +127,21 @@ class DivideListeners
       return false;
     }
 
-    // 一级代理商收益
-    $first_level_agent_proportion = $asset->proportion;
-
     // 直属店长收益
     $response = $asset->manger_proportion;
 
+    // 一级代理商收益
+    $first_level_agent_proportion = $asset->proportion;
+
     // 收益金额
     $money = bcmul($first_level_agent_proportion, $total, 2);
+
+    if($rate > 0)
+    {
+      $withdrawal_rate = bcdiv($rate, 100, 2);
+
+      $money = bcsub($money, bcmul($money, $withdrawal_rate, 2), 2);
+    }
 
     // 收益记录
     $model = new Obtain();
@@ -162,7 +172,7 @@ class DivideListeners
    * @param [type] $proportion 单页收益金额
    * @return [type]
    */
-  private function manager($order_id, $member_id, $total, $proportion)
+  private function manager($order_id, $member_id, $total, $proportion, $rate)
   {
     // 查询一级代理商资产信息
     $asset = Asset::getRow(['member_id' => $member_id]);
@@ -174,6 +184,13 @@ class DivideListeners
 
     // 收益金额
     $money = bcmul($proportion, $total, 2);
+
+    if($rate > 0)
+    {
+      $withdrawal_rate = bcdiv($rate, 100, 2);
+
+      $money = bcsub($money, bcmul($money, $withdrawal_rate, 2), 2);
+    }
 
     // 收益记录
     $model = new Obtain();
