@@ -137,7 +137,7 @@ class DivideListeners
     $model = new Obtain();
     $model->member_id = $member_id;
     $model->order_id = $order_id;
-    $model->money = $moeny;
+    $model->money = $money;
     $model->save();
 
     $asset->increment('money', $money);
@@ -179,7 +179,7 @@ class DivideListeners
     $model = new Obtain();
     $model->member_id = $member_id;
     $model->order_id = $order_id;
-    $model->money = $moeny;
+    $model->money = $money;
     $model->save();
 
     $asset->increment('money', $money);
