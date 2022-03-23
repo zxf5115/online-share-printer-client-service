@@ -77,7 +77,7 @@ class DivideListeners
       }
 
       // 平台手续费税率
-      $rate = Config::getValue('value', ['title' => 'withdrawal_rate']);
+      $rate = 0; ///Config::getValue('value', ['title' => 'withdrawal_rate']);
 
       // 一级代理商收益
       $manager_proportion = $this->agent($order->id, $first_level_agent_id, $total, $rate);
