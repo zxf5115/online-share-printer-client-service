@@ -50,7 +50,7 @@ class FileController extends BaseController
 
       $allow = ['docx', 'doc', 'xls', 'xlsx', 'pdf', 'txt', 'png', 'jpg', 'jpeg'];
 
-      $url = File::file('file', $category, $allow);
+      $url = File::file_base64($request->file, $category, $allow);
 
       // 如果返回错误代码
       if(false === strpos($url, 'http'))
