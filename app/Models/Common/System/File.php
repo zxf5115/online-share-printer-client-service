@@ -203,6 +203,7 @@ class File extends Base
   {
     try
     {
+      // 判断当前资源是什么
       if(false !==strpos($file, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'))
       {
         // 替换编码头
@@ -227,6 +228,18 @@ class File extends Base
         preg_match('/^(data:application\/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,)/', $file, $data);
         $data[2] = 'xlsx';
       }
+      else if(false !==strpos($file, 'application/vnd.ms-powerpoint'))
+      {
+        // 替换编码头
+        preg_match('/^(data:application\/vnd.ms-powerpoint;base64,)/', $file, $data);
+        $data[2] = 'ppt';
+      }
+      else if(false !==strpos($file, 'application/vnd.openxmlformats-officedocument.presentationml.presentation'))
+      {
+        // 替换编码头
+        preg_match('/^(data:application\/vnd.openxmlformats-officedocument.presentationml.presentation;base64,)/', $file, $data);
+        $data[2] = 'pptx';
+      }
       else if(false !==strpos($file, 'application/pdf'))
       {
         // 替换编码头
@@ -238,6 +251,18 @@ class File extends Base
         // 替换编码头
         preg_match('/^(data:application\/octet-stream;base64,)/', $file, $data);
         $data[2] = 'xlsx';
+      }
+      else if(false !==strpos($file, 'audio/mp3'))
+      {
+        // 替换编码头
+        preg_match('/^(data:audio\/mp3;base64,)/', $file, $data);
+        $data[2] = 'mp3';
+      }
+      else if(false !==strpos($file, 'text/plain'))
+      {
+        // 替换编码头
+        preg_match('/^(data:text\/plain;base64,)/', $file, $data);
+        $data[2] = 'txt';
       }
       else
       {

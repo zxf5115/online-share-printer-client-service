@@ -58,9 +58,7 @@ class FileController extends BaseController
         return self::message($url);
       }
 
-      $file = request()->file('file');
-
-      $result = LocalFile::data($file);
+      $result = LocalFile::file_base64($request->file, 'temporary');
 
       // 获取文件名称
       $filename = $file->getClientOriginalName();
