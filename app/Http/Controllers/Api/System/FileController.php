@@ -35,7 +35,6 @@ class FileController extends BaseController
    * @apiParam {string} file 文件数据
    * @apiParam {string} [category] 文件分类 excel word pdf video audio ...
    *
-   * @apiSuccess (字段说明) {string} filename 文件名称
    * @apiSuccess (字段说明) {string} url 打印原始文件地址
    * @apiSuccess (字段说明) {string} pdf_url 打印PDF文件地址
    *
@@ -50,7 +49,7 @@ class FileController extends BaseController
 
       $allow = ['docx', 'doc', 'xls', 'xlsx', 'pdf', 'txt', 'png', 'jpg', 'jpeg'];
 
-      $url = File::file_base64($request->file, $category, $allow);
+      $url = File::file('file', $category, $allow);
 
       // 如果返回错误代码
       if(false === strpos($url, 'http'))
@@ -58,10 +57,9 @@ class FileController extends BaseController
         return self::message($url);
       }
 
-      $result = LocalFile::file_base64($request->file, 'temporary');
+      $file = request()->file('file');
 
-      // 获取文件名称
-      $filename = $file->getClientOriginalName();
+      $result = LocalFile::data($file);
 
       // 获取文件后缀
       $extension = $file->getClientOriginalExtension();
@@ -74,8 +72,7 @@ class FileController extends BaseController
 
       $response = [
         'url' => $url,
-        'pdf_url' => $result,
-        'filename' => $filename
+        'pdf_url' => $result
       ];
 
       return self::success($response);
@@ -122,6 +119,71 @@ class FileController extends BaseController
       {
         return self::message($response);
       }
+
+      return self::success($response);
+    }
+    catch(\Exception $e)
+    {
+      // 记录异常信息
+      record($e);
+
+      return self::error(Code::FILE_UPLOAD_ERROR);
+    }
+  }
+
+
+  /**
+   * @api {post} /api/file/file_base64 03. 上传文件（base64）
+   * @apiDescription 通过base64内容进行文件上传
+   * @apiGroup 03. 上传模块
+   * @apiPermission jwt
+   * @apiHeader {String} Authorization 身份令牌
+   * @apiHeaderExample {json} Header-Example:
+   * {
+   *   "Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiO"
+   * }
+   *
+   * @apiParam {string} file base64文件数据
+   * @apiParam {string} [category] 文件分类 excel word pdf video audio ...
+   *
+   * @apiSuccess (字段说明) {string} url 打印原始文件地址
+   * @apiSuccess (字段说明) {string} pdf_url 打印PDF文件地址
+   *
+   * @apiSampleRequest /api/file/file_base64
+   * @apiVersion 1.0.0
+   */
+  public function file_base64(Request $request)
+  {
+    try
+    {
+      $category = $request->category ?? 'picture';
+
+      $allow = ['docx', 'doc', 'xls', 'xlsx', 'pdf', 'txt', 'png', 'jpg', 'jpeg'];
+
+      $url = File::file_base64($request->file, $category, $allow);
+
+      // 如果返回错误代码
+      if(false === strpos($url, 'http'))
+      {
+        return self::message($url);
+      }
+
+      $data = LocalFile::file_base64($request->file, 'temporary');
+
+      $result = $data['url'];
+
+      $extension = $data['extension'];
+
+      // 将图片添加到文件队列
+      FileQueue::dispatch($result, $extension);
+
+      // 修改文件后缀
+      $result = self::changeFileExtension($result);
+
+      $response = [
+        'url' => $url,
+        'pdf_url' => $result
+      ];
 
       return self::success($response);
     }

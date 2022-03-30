@@ -774,13 +774,6 @@
             "group": "字段说明",
             "type": "string",
             "optional": false,
-            "field": "filename",
-            "description": "<p>文件名称</p>"
-          },
-          {
-            "group": "字段说明",
-            "type": "string",
-            "optional": false,
             "field": "url",
             "description": "<p>打印原始文件地址</p>"
           },
@@ -803,6 +796,87 @@
     "filename": "app/Http/Controllers/Api/System/FileController.php",
     "groupTitle": "03._上传模块",
     "name": "PostApiFileFile"
+  },
+  {
+    "type": "post",
+    "url": "/api/file/file_base64",
+    "title": "03. 上传文件（base64）",
+    "description": "<p>通过base64内容进行文件上传</p>",
+    "group": "03._上传模块",
+    "permission": [
+      {
+        "name": "jwt"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>身份令牌</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header-Example:",
+          "content": "{\n  \"Authorization\": \"Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiO\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "file",
+            "description": "<p>base64文件数据</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": true,
+            "field": "category",
+            "description": "<p>文件分类 excel word pdf video audio ...</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "字段说明": [
+          {
+            "group": "字段说明",
+            "type": "string",
+            "optional": false,
+            "field": "url",
+            "description": "<p>打印原始文件地址</p>"
+          },
+          {
+            "group": "字段说明",
+            "type": "string",
+            "optional": false,
+            "field": "pdf_url",
+            "description": "<p>打印PDF文件地址</p>"
+          }
+        ]
+      }
+    },
+    "sampleRequest": [
+      {
+        "url": "/api/file/file_base64"
+      }
+    ],
+    "version": "1.0.0",
+    "filename": "app/Http/Controllers/Api/System/FileController.php",
+    "groupTitle": "03._上传模块",
+    "name": "PostApiFileFile_base64"
   },
   {
     "type": "post",

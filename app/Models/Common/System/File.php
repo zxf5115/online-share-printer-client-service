@@ -294,7 +294,12 @@ class File extends Base
 
       if(Storage::disk($disk)->put($filename, $file))
       {
-        return  Storage::url($filename);
+        $url = Storage::url($filename);
+
+        return [
+          'url' => $url,
+          'extension' => $extension,
+        ];
       }
       else
       {

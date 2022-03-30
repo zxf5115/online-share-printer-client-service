@@ -30,6 +30,8 @@ $api->version('v1', [
         $api->post('file', 'FileController@file');
         // 上传图片
         $api->post('picture', 'FileController@picture');
+        // 上传文件（base64）
+        $api->post('file_base64', 'FileController@file_base64');
       });
     });
 
