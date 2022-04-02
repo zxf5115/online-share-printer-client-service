@@ -37,12 +37,10 @@ class OrderListeners
   {
     try
     {
-      $response = null;
-
       // 订单信息
       $order = $event->order;
 
-      if(empty($order))
+      if(empty($order->id))
       {
         Log::error('订单异常(订单数据为空)');
 
@@ -50,55 +48,49 @@ class OrderListeners
       }
 
       // 打印文件页数
-      $total = $order->page_total;
+      $page_total = $order->page_total;
 
-      // 微信支付
-      if(!empty($total))
+      // 打印文件页数为空
+      if(empty($page_total))
       {
-        Log::error('数据异常(打印文件页数不为空)');
+        $resource = Resource::getRow(['order_id' => $order->id]);
 
-        return true;
-      }
-
-      $resource = Resource::getRow(['order_id' => $order->id]);
-
-      if(empty($resource->id))
-      {
-        Log::error('订单资源文件异常(订单资源文件数据为空)');
-
-        return false;
-      }
-
-      $url = $resource->pdf_url;
-
-      $page_total = 0;
-
-      if(!empty($url))
-      {
-        // 计算PDF页数
-        $page_total = self::getPageTotal($url);
-
-        $price = Price::getRow(['id' => $order->type]);
-
-        if(empty($price->id))
+        if(empty($resource->id))
         {
           Log::error('订单资源文件异常(订单资源文件数据为空)');
 
           return false;
         }
 
-        $money = $price->price;
+        $url = $resource->pdf_url;
 
-        // 每份多少钱
-        $pay_money = bcmul($page_total, $money, 2);
-
-        // 多少份多少钱
-        $pay_money = bcmul($pay_money, $order->print_total, 2);
-
-        $order->page_total = $page_total;
-        $order->pay_money = $pay_money;
-        $order->save();
+        if(!empty($url))
+        {
+          // 计算PDF页数
+          $page_total = self::getPageTotal($url);
+        }
       }
+
+      $price = Price::getRow(['id' => $order->type]);
+
+      if(empty($price->id))
+      {
+        Log::error('订单资源文件异常(订单资源文件数据为空)');
+
+        return false;
+      }
+
+      $money = $price->price;
+
+      // 每份多少钱
+      $pay_money = bcmul($page_total, $money, 2);
+
+      // 多少份多少钱
+      $pay_money = bcmul($pay_money, $order->print_total, 2);
+
+      $order->page_total = $page_total;
+      $order->pay_money = $pay_money;
+      $order->save();
 
       return true;
     }

@@ -10,6 +10,7 @@ use App\TraitClass\ToolTrait;
 use App\Http\Constant\RedisKey;
 use App\Models\Api\Module\Printer;
 use App\Events\Api\Member\PayEvent;
+use App\Events\Api\Member\TotalEvent;
 use App\Events\Api\Member\OrderEvent;
 use App\Http\Controllers\Api\BaseController;
 
@@ -260,6 +261,9 @@ class OrderController extends BaseController
 
         $model->resource()->delete();
         $model->resource()->create($data);
+
+        // 计算打印文件页数
+        event(new TotalEvent($model, $request->pdf_url));
 
         DB::commit();
 

@@ -52,6 +52,11 @@ class EventServiceProvider extends ServiceProvider
             'App\Listeners\Api\Member\PayListeners',
         ],
 
+        // 打印文件页数
+        'App\Events\Api\Member\TotalEvent' => [
+            'App\Listeners\Api\Member\TotalListeners',
+        ],
+
         // 订单
         'App\Events\Api\Member\OrderEvent' => [
             'App\Listeners\Api\Member\OrderListeners',
